@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Shooting Script Maker v3.0 — media pembelajaran praktik penyiaran & film, terintegrasi Teaching Factory.">
+<title>Shooting Script Maker v3.0</title>
+<style>
+:root{--bg:#f3f1ec;--surface:#fff;--surface2:#f8f6f1;--ink:#1c1e2e;--muted:#5f6276;--line:#e4e0d7;
+--side:#151935;--side2:#242a52;--side-ink:#b9bdd9;--side-hi:#fff;
+--accent:#e4572e;--accent2:#f2a93b;--accent-ink:#fff;--accent-soft:#fde9e2;
+--teal:#14907f;--teal-soft:#dcf3ef;--indigo:#4954c9;--indigo-soft:#e5e7fb;--coral:#d9472a;--coral-soft:#fde4dc;
+--ok:#15803d;--ok-soft:#dcfce7;--warn:#a6460c;--warn-soft:#fff0d6;--info:#2f45b5;--info-soft:#e3e9ff;--ref:#7e2fb8;--ref-soft:#f3e7fd;--danger:#c0262d;
+--r:12px;--sh:0 1px 2px rgba(20,22,50,.05),0 4px 14px rgba(20,22,50,.06);--font:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+[data-theme=dark]{--bg:#0e1121;--surface:#171b32;--surface2:#1e2340;--ink:#eceefa;--muted:#a4a8c4;--line:#2b3156;
+--side:#090b18;--side2:#1d2245;--side-ink:#9ea3c6;
+--accent:#ff7a50;--accent2:#ffc15e;--accent-ink:#1a0c05;--accent-soft:#3b2222;
+--teal:#4fd1bf;--teal-soft:#123632;--indigo:#9aa3ff;--indigo-soft:#232a5a;--coral:#ff8a6b;--coral-soft:#40211c;
+--ok:#86efac;--ok-soft:#14321f;--warn:#fcd34d;--warn-soft:#3a2e12;--info:#a5b4fc;--info-soft:#1c2550;--ref:#d8b4fe;--ref-soft:#2e1d44;--danger:#fca5a5;--sh:none}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:14.5px/1.5 var(--font)}
+a{color:var(--accent)}
+.skip{position:absolute;left:-999px;top:0;background:var(--accent);color:var(--accent-ink);padding:8px 12px;z-index:99;border-radius:0 0 8px 0}
+.skip:focus{left:0}
+:focus-visible{outline:3px solid var(--accent2);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ===== shell ===== */
+.app{display:grid;grid-template-columns:228px minmax(0,1fr);min-height:100vh}
+.side{background:var(--side);color:var(--side-ink);position:sticky;top:0;height:100vh;display:flex;flex-direction:column;padding:16px 12px;gap:6px;overflow-y:auto}
+.brand{display:flex;align-items:center;gap:10px;padding:2px 6px 14px}
+.logo{width:40px;height:40px;border-radius:11px;background:linear-gradient(135deg,var(--accent),var(--accent2));display:grid;place-items:center;font-size:20px;box-shadow:0 4px 14px rgba(228,87,46,.4)}
+.brand b{display:block;color:var(--side-hi);font-size:15px;line-height:1.15}
+.brand span{font-size:12px;color:var(--accent2);font-weight:700;letter-spacing:.3px}
+nav.tabs{display:flex;flex-direction:column;gap:2px}
+nav.tabs .grp{font-size:10.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:#7a80a8;margin:12px 10px 4px}
+nav.tabs button{display:flex;align-items:center;gap:10px;border:0;background:none;color:var(--side-ink);padding:9px 10px;border-radius:9px;text-align:left;font-weight:600;position:relative}
+nav.tabs button .ic{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:rgba(255,255,255,.06);font-size:14px;flex:none}
+nav.tabs button:hover{background:rgba(255,255,255,.05);color:var(--side-hi)}
+nav.tabs button[aria-selected=true]{background:var(--side2);color:var(--side-hi)}
+nav.tabs button[aria-selected=true] .ic{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+nav.tabs button[aria-selected=true]::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:4px;border-radius:0 4px 4px 0;background:var(--accent2)}
+.side-foot{margin-top:auto;padding-top:12px;display:flex;flex-direction:column;gap:6px}
+.side-foot button{border:1px solid rgba(255,255,255,.12);background:transparent;color:var(--side-ink);border-radius:9px;padding:8px 10px;text-align:left;font-weight:600}
+.side-foot button:hover{color:#fff;border-color:var(--accent2)}
+.side-foot small{color:#6d7299;font-size:11px;padding:0 4px}
+
+.mainwrap{min-width:0;display:flex;flex-direction:column}
+header.top{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding:10px 22px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+header.top h1{font-size:19px;margin:0;line-height:1.2}
+header.top p{margin:0;font-size:12.5px;color:var(--muted)}
+.ttl{margin-right:auto;min-width:0}
+.tools{display:flex;gap:6px;flex-wrap:wrap;align-items:center}
+main{padding:14px 22px 28px;flex:1}
+
+/* ===== controls ===== */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:6px 12px;border-radius:9px;min-height:36px;white-space:nowrap;font-weight:600;font-size:13.5px}
+.btn:hover{border-color:var(--accent)}
+.btn.primary{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;border:0;box-shadow:0 3px 10px rgba(228,87,46,.28)}
+[data-theme=dark] .btn.primary{color:#1a0c05}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--danger)}
+.btn.sm{min-height:30px;padding:3px 10px;font-size:12.5px}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.ib{border:1px solid var(--line);background:var(--surface);width:32px;height:32px;border-radius:8px;display:inline-grid;place-items:center;font-size:14px;line-height:1;flex:none}
+.ib:hover{border-color:var(--accent)}
+.ib:disabled{opacity:.35}
+.fld{display:flex;flex-direction:column;gap:3px;min-width:0}
+.fld label,.lbl{font-size:11.5px;font-weight:700;color:var(--muted);letter-spacing:.2px}
+input[type=text],input[type=number],input[type=date],input[type=time],input[type=tel],select,textarea{width:100%;border:1px solid var(--line);background:var(--surface2);border-radius:8px;padding:6px 9px;min-height:36px}
+textarea{resize:vertical;min-height:56px}
+input:focus,select:focus,textarea:focus{border-color:var(--accent);outline:3px solid var(--accent-soft);background:var(--surface)}
+
+/* ===== layout ===== */
+.panel[hidden]{display:none}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px 16px;box-shadow:var(--sh)}
+.card+.card{margin-top:12px}
+.cols>.card,.cols>div>.card:first-child{margin-top:0}
+.tbl td.num{white-space:nowrap}
+details.card>summary{list-style:none;cursor:pointer}
+details.card>summary::-webkit-details-marker{display:none}
+details.card>summary h2::after{content:'▾';margin-left:auto;color:var(--muted);font-size:13px}
+details.card:not([open])>summary h2{margin:0}
+details.card:not([open])>summary h2::after{content:'▸'}
+.card h2{margin:0 0 2px;font-size:15.5px;display:flex;align-items:center;gap:8px}
+.card h3{margin:12px 0 6px;font-size:13.5px}
+.sub{color:var(--muted);font-size:12.5px;margin:0 0 10px}
+.cols{display:grid;gap:14px;align-items:start}
+.c-side{grid-template-columns:290px minmax(0,1fr)}
+.c-half{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.c-wide{grid-template-columns:minmax(0,1fr) 340px}
+.stick{position:sticky;top:76px}
+.fgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 10px}
+.fgrid .wide,.fgrid .w2{grid-column:1/-1}
+.fgrid.one{grid-template-columns:1fr}
+.bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.bar .sp{flex:1}
+.hint{font-size:12.5px;color:var(--muted)}
+.tip{background:linear-gradient(135deg,var(--accent-soft),transparent);border:1px solid var(--line);border-radius:var(--r);padding:9px 12px;font-size:12.8px;margin-top:12px}
+.scrollbox{max-height:calc(100vh - 230px);overflow:auto;border-radius:10px}
+.banner{background:var(--info-soft);color:var(--info);border-radius:var(--r);padding:8px 12px;margin-bottom:12px;font-size:13px}
+
+/* ===== stats ===== */
+.stats{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:8px;padding:12px 22px 0}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:8px 11px;box-shadow:var(--sh);position:relative;overflow:hidden;min-width:0}
+.stat::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--c,var(--accent))}
+.stat b{display:block;font-size:17px;line-height:1.25;font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat span{font-size:11px;color:var(--muted);font-weight:600}
+.stat small{font-size:11px;color:var(--muted);font-weight:600}
+
+/* ===== shots ===== */
+#shots{display:flex;flex-direction:column;gap:8px}
+.shot{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);overflow:hidden}
+.shot.open{border-color:color-mix(in srgb,var(--accent) 45%,var(--line))}
+.shot.dragging{opacity:.45}
+.shot.over{outline:2px dashed var(--accent)}
+.shot-h{display:flex;align-items:center;gap:8px;padding:6px 8px}
+.drag{cursor:grab;border:0;background:none;font-size:18px;color:var(--muted);padding:0 2px;touch-action:none}
+.no{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:13px;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff}
+.mini{flex:none;width:52px;height:30px;border-radius:6px;background:var(--surface2) center/cover no-repeat;border:1px solid var(--line)}
+.sum{flex:1;min-width:0;display:flex;align-items:center;gap:10px;border:0;background:none;text-align:left;padding:3px 2px;border-radius:8px}
+.sum:hover .vis{color:var(--ink)}
+.sumtxt{flex:1;min-width:0;display:flex;flex-direction:column}
+.slug{font-family:ui-monospace,Consolas,monospace;font-size:11.5px;font-weight:700;color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.vis{font-size:13px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bdg{display:flex;gap:4px;flex:none}
+.bz,.bd{font-size:11px;font-weight:700;padding:2px 7px;border-radius:99px;white-space:nowrap}
+.bz.w{background:var(--teal-soft);color:var(--teal)}.bz.m{background:var(--indigo-soft);color:var(--indigo)}.bz.c{background:var(--coral-soft);color:var(--coral)}
+.bd{background:var(--surface2);border:1px solid var(--line);color:var(--muted)}
+.chev{flex:none;transition:transform .2s;color:var(--muted)}
+.shot.open .chev{transform:rotate(180deg)}
+.shot-act{display:flex;gap:3px;flex:none}
+.shot-b{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px 10px;padding:10px 12px 12px;border-top:1px dashed var(--line);background:var(--surface2)}
+.shot-b input,.shot-b select,.shot-b textarea{background:var(--surface)}
+.shot-b[hidden]{display:none}
+.g2{grid-column:span 2}.g3{grid-column:span 3}.g6{grid-column:1/-1}
+.legend{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--muted)}
+.empty{text-align:center;padding:34px 16px;color:var(--muted);border:2px dashed var(--line);border-radius:var(--r);background:var(--surface)}
+
+/* ===== storyboard ===== */
+.sb{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:12px}
+.frame{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);overflow:hidden;box-shadow:var(--sh);display:flex;flex-direction:column}
+.frame button.pic{border:0;padding:0;background:var(--surface2) center/contain no-repeat;display:grid;place-items:center;color:var(--muted);font-size:12.5px;width:100%;position:relative}
+.frame button.pic .n{position:absolute;left:6px;top:6px}
+.frame .cap{padding:7px 9px;font-size:12px}
+.frame .cap .vis{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;font-size:12px}
+
+/* ===== tables ===== */
+.tbl{width:100%;border-collapse:collapse;font-size:13px}
+.tbl th,.tbl td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+.tbl th{font-size:11px;color:var(--muted);background:var(--surface2);text-transform:uppercase;letter-spacing:.4px;position:sticky;top:0;z-index:1}
+.tbl td.num,.tbl th.num{text-align:right;font-variant-numeric:tabular-nums}
+.tbl input,.tbl select{min-height:32px;padding:4px 7px}
+.scroll{overflow-x:auto}
+.locs{display:grid;grid-template-columns:repeat(auto-fit,minmax(460px,1fr));gap:12px}
+details.loc{border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface);box-shadow:var(--sh)}
+details.loc summary{list-style:none;cursor:pointer;padding:9px 12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--surface2);font-weight:700;font-size:13px}
+details.loc summary::-webkit-details-marker{display:none}
+details.loc summary .sp{flex:1}
+.ord{width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--side);color:#fff;font-size:12px}
+.prodbar{display:flex;gap:10px;flex-wrap:wrap;align-items:end}
+.prodbar .fld{width:150px}
+
+/* ===== review ===== */
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:99px;padding:4px 11px;font-size:12.5px;font-weight:700}
+.chip[aria-pressed=true]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.flist{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:8px}
+.finding{border-radius:10px;padding:8px 11px;border-left:4px solid;font-size:13px}
+.finding.perlu{background:var(--warn-soft);border-color:var(--warn)}
+.finding.saran{background:var(--info-soft);border-color:var(--info)}
+.finding.refleksi{background:var(--ref-soft);border-color:var(--ref)}
+.finding b{display:block;font-size:13px}
+.finding p{margin:3px 0 0}
+.finding .q::before{content:"❓ "}
+.lv{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.6px}
+.finding.perlu .lv{color:var(--warn)}.finding.saran .lv{color:var(--info)}.finding.refleksi .lv{color:var(--ref)}
+.finding .go{margin-top:5px}
+
+/* ===== pipeline ===== */
+.pipe{display:flex;flex-direction:column;gap:5px}
+.stage{display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:10px;padding:7px 10px;background:var(--surface);text-align:left;width:100%}
+.stage .dot{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:800;background:var(--surface2);border:2px solid var(--line)}
+.stage.done .dot{background:var(--ok);border-color:var(--ok);color:#fff}
+.stage.cur .dot{background:linear-gradient(135deg,var(--accent),var(--accent2));border-color:transparent;color:#fff}
+.stage[aria-pressed=true]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.stage .tx{flex:1;min-width:0}
+.stage b{font-size:13px;display:block}
+.stage small{color:var(--muted);font-size:11px}
+.prog{height:4px;background:var(--line);border-radius:9px;margin-top:4px;overflow:hidden}
+.prog i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.checks label{display:flex;gap:8px;align-items:flex-start;padding:4px 0;font-size:13.5px}
+.checks input{width:17px;height:17px;margin-top:2px;accent-color:var(--accent)}
+.gear{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:0 12px}
+.gear label{padding:3px 0;font-size:13px}
+.sum2{display:grid;grid-template-columns:1fr auto;gap:5px 12px;font-size:13.5px}
+.sum2 div:nth-child(even){text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+.sum2 .t{font-weight:800;border-top:2px solid var(--ink);padding-top:5px;font-size:15px}
+.sum2 .s{color:var(--muted);font-size:12.5px}
+.big{font-size:22px;font-weight:800;background:linear-gradient(135deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.docview{background:#fff;color:#111;border:1px solid var(--line);border-radius:10px;padding:18px;overflow:auto}
+
+/* ===== dialog ===== */
+dialog{border:1px solid var(--line);border-radius:16px;padding:0;background:var(--surface);color:var(--ink);max-width:min(800px,96vw);width:100%;box-shadow:0 24px 70px rgba(0,0,0,.35)}
+dialog.xl{max-width:min(1000px,96vw)}
+dialog::backdrop{background:rgba(10,12,30,.6);backdrop-filter:blur(2px)}
+.dlg-h{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line)}
+.dlg-h h2{margin:0;font-size:16px;flex:1}
+.dlg-b{padding:14px 16px;max-height:72vh;overflow:auto}
+.dlg-f{display:flex;gap:8px;justify-content:flex-end;padding:12px 16px;border-top:1px solid var(--line);flex-wrap:wrap}
+.canvas-wrap{position:relative;background:#fff;border:1px solid var(--line);border-radius:8px;margin:0 auto;touch-action:none}
+.canvas-wrap canvas{display:block;width:100%;height:100%;border-radius:8px;touch-action:none;cursor:crosshair}
+.thirds{position:absolute;inset:0;pointer-events:none;background:
+ linear-gradient(to right,transparent calc(33.33% - .5px),rgba(228,87,46,.5) 33.33%,transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(228,87,46,.5) 66.66%,transparent calc(66.66% + .5px)),
+ linear-gradient(to bottom,transparent calc(33.33% - .5px),rgba(228,87,46,.5) 33.33%,transparent calc(33.33% + .5px),transparent calc(66.66% - .5px),rgba(228,87,46,.5) 66.66%,transparent calc(66.66% + .5px))}
+.tplgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.tpl{border:1px solid var(--line);border-radius:var(--r);padding:12px;background:var(--surface);text-align:left;position:relative;overflow:hidden}
+.tpl::before{content:"";position:absolute;inset:0 0 auto 0;height:4px;background:linear-gradient(90deg,var(--accent),var(--accent2))}
+.tpl:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tpl b{display:block;margin-bottom:3px}
+.tpl span{font-size:12.5px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%) translateY(120px);background:var(--side);color:#fff;padding:10px 16px;border-radius:10px;z-index:100;transition:transform .25s;max-width:90vw;font-size:13.5px;box-shadow:0 8px 24px rgba(0,0,0,.25)}
+.toast.show{transform:translateX(-50%) translateY(0)}
+#print-area{display:none}
+
+/* ===== responsive ===== */
+@media (max-width:1280px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:1100px){.c-side,.c-wide,.c-half{grid-template-columns:minmax(0,1fr)}.stick{position:static}.bdg .bd:not(.dur){display:none}}
+@media (max-width:900px){
+ .app{grid-template-columns:1fr}
+ .side{position:sticky;height:auto;flex-direction:row;align-items:center;padding:8px 10px;z-index:20;overflow-x:auto;gap:4px}
+ .brand{padding:0 6px 0 0}.brand div:last-child{display:none}
+ nav.tabs{flex-direction:row}
+ nav.tabs .grp{display:none}
+ nav.tabs button{padding:7px 9px;white-space:nowrap;font-size:13px}
+ nav.tabs button[aria-selected=true]::before{display:none}
+ .side-foot{margin:0 0 0 6px;padding:0;flex-direction:row}
+ .side-foot small{display:none}
+ .side-foot button{white-space:nowrap}
+ header.top{position:static;padding:10px 14px}
+ main{padding:12px 14px 24px}.stats{padding:10px 14px 0}
+ .locs{grid-template-columns:1fr}
+}
+@media (max-width:640px){
+ .stats{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.stat{padding:6px 8px}.stat b{font-size:14px}.stat:nth-child(n+5){display:none}.stat span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+ .shot-b{grid-template-columns:repeat(2,minmax(0,1fr))}.g2,.g3,.g6{grid-column:1/-1}
+ .shot-h{flex-wrap:wrap}.bdg{display:none}.mini{display:none}
+ .fgrid{grid-template-columns:1fr}
+ .tl{display:none}
+}
+@media print{
+ body{background:#fff;color:#000}
+ body>*:not(#print-area){display:none!important}
+ #print-area{display:block!important}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Lompat ke konten</a>
+<div class="app">
+ <aside class="side">
+  <div class="brand"><div class="logo" aria-hidden="true">🎬</div><div><b>Shooting Script</b><span>MAKER v3.0</span></div></div>
+  <nav class="tabs" role="tablist" aria-orientation="vertical" aria-label="Bagian aplikasi">
+   <p class="grp" role="presentation">Produksi</p>
+   <button role="tab" id="t-naskah" aria-controls="p-naskah" data-tab="naskah"><span class="ic" aria-hidden="true">📝</span><span>Naskah</span></button>
+   <button role="tab" id="t-storyboard" aria-controls="p-storyboard" data-tab="storyboard"><span class="ic" aria-hidden="true">🎨</span><span>Storyboard</span></button>
+   <button role="tab" id="t-lokasi" aria-controls="p-lokasi" data-tab="lokasi"><span class="ic" aria-hidden="true">📍</span><span>Shot List Lokasi</span></button>
+   <button role="tab" id="t-reviu" aria-controls="p-reviu" data-tab="reviu"><span class="ic" aria-hidden="true">🔍</span><span>Asisten Reviu</span></button>
+   <button role="tab" id="t-cetak" aria-controls="p-cetak" data-tab="cetak"><span class="ic" aria-hidden="true">🖨</span><span>Pratinjau & Ekspor</span></button>
+   <p class="grp" role="presentation">Teaching Factory</p>
+   <button role="tab" id="t-order" aria-controls="p-order" data-tab="order"><span class="ic" aria-hidden="true">🤝</span><span>Order Klien</span></button>
+   <button role="tab" id="t-callsheet" aria-controls="p-callsheet" data-tab="callsheet"><span class="ic" aria-hidden="true">📋</span><span>Call Sheet</span></button>
+   <button role="tab" id="t-budget" aria-controls="p-budget" data-tab="budget"><span class="ic" aria-hidden="true">💰</span><span>Budget / RAB</span></button>
+  </nav>
+  <div class="side-foot">
+   <button id="bTheme" type="button" aria-pressed="false">🌙 Mode Gelap</button>
+   <small>Professional Scripting for Broadcasting & Film</small>
+  </div>
+ </aside>
+
+ <div class="mainwrap">
+  <header class="top">
+   <div class="ttl"><h1 id="secTitle">Naskah</h1><p id="secSub"></p></div>
+   <div class="tools" role="toolbar" aria-label="Alat utama">
+    <span class="hint tl" id="saveState" aria-live="polite">Tersimpan ✓</span>
+    <button class="ib" id="bUndo" type="button" title="Urungkan (Ctrl+Z)" aria-label="Urungkan">↶</button>
+    <button class="ib" id="bRedo" type="button" title="Ulangi (Ctrl+Y)" aria-label="Ulangi">↷</button>
+    <button class="btn" id="bTpl" type="button">📚 <span class="tl">Template</span></button>
+    <button class="btn" id="bBackup" type="button">💾 <span class="tl">Cadangan</span></button>
+   </div>
+  </header>
+  <section class="stats" aria-label="Ringkasan produksi" id="dash"></section>
+
+  <main id="main" tabindex="-1">
+   <div id="frameBanner" class="banner" hidden>Mode pratinjau: unduhan dan cetak dibatasi oleh tampilan ini. Semua ekspor berjalan normal setelah file diunggah ke Ruang Karya atau dibuka langsung di browser.</div>
+
+   <!-- NASKAH -->
+   <section class="panel" id="p-naskah" role="tabpanel" aria-labelledby="t-naskah">
+    <div class="cols c-side">
+     <div class="stick">
+      <details class="card" id="metaCard" open>
+       <summary><h2>🎬 Identitas Produksi</h2></summary>
+       <p class="sub" style="margin-top:4px">Tampil di naskah cetak, call sheet, dan RAB.</p>
+       <div class="fgrid" id="metaForm"></div>
+       <div class="tip"><b>Tips:</b> isi visual, audio, dan pergerakan kamera sedetail mungkin. Kolom bertanda ▸ dari template adalah pertanyaan pemandu, jadi ganti dengan jawabanmu sendiri.</div>
+      </details>
+     </div>
+     <div>
+      <div class="bar">
+       <button class="btn primary" id="bAdd" type="button">＋ Tambah Shot</button>
+       <button class="btn" id="bAddScene" type="button">＋ Scene Baru</button>
+       <button class="btn ghost" id="bExpand" type="button">⇕ Buka semua</button>
+       <span class="sp"></span>
+       <span class="legend" aria-label="Keterangan warna ukuran shot"><span class="bz w">Lebar</span><span class="bz m">Menengah</span><span class="bz c">Dekat</span></span>
+       <button class="btn danger sm" id="bReset" type="button">Reset</button>
+      </div>
+      <div id="shots" aria-label="Daftar shot"></div>
+     </div>
+    </div>
+   </section>
+
+   <!-- STORYBOARD -->
+   <section class="panel" id="p-storyboard" role="tabpanel" aria-labelledby="t-storyboard" hidden>
+    <div class="sb" id="sbGrid"></div>
+   </section>
+
+   <!-- LOKASI -->
+   <section class="panel" id="p-lokasi" role="tabpanel" aria-labelledby="t-lokasi" hidden>
+    <div class="card" style="margin-bottom:12px">
+     <div class="prodbar">
+      <div class="fld"><label for="pSetupLoc">Persiapan/lokasi (mnt)</label><input type="number" min="0" id="pSetupLoc" data-prod="setupLoc"></div>
+      <div class="fld"><label for="pSetupShot">Persiapan/shot (mnt)</label><input type="number" min="0" id="pSetupShot" data-prod="setupShot"></div>
+      <div class="fld"><label for="pTake">Rasio take (×)</label><input type="number" min="1" id="pTake" data-prod="take"></div>
+      <div class="fld"><label for="pMove">Pindah lokasi (mnt)</label><input type="number" min="0" id="pMove" data-prod="move"></div>
+      <p class="hint" id="locInfo" style="margin:0 0 8px;flex:1;min-width:220px"></p>
+     </div>
+    </div>
+    <div id="locList"></div>
+   </section>
+
+   <!-- REVIU -->
+   <section class="panel" id="p-reviu" role="tabpanel" aria-labelledby="t-reviu" hidden>
+    <div class="cols c-wide">
+     <div class="card">
+      <div class="bar">
+       <button class="btn primary" id="bReview" type="button">🔍 Jalankan Reviu</button>
+       <div class="chips" role="group" aria-label="Saring temuan" id="revChips"></div>
+       <span class="sp"></span><span class="hint" id="revSum"></span>
+      </div>
+      <p class="sub">Asisten ini <b>tidak menulis naskah untukmu</b>. Ia hanya menandai bagian yang perlu dicek dan mengajukan pertanyaan. Pemeriksaan berjalan di perangkatmu, tanpa internet.</p>
+      <div class="scrollbox"><div class="flist" id="findings" aria-live="polite"></div></div>
+     </div>
+     <div class="stick">
+      <div class="card">
+       <h2>🪞 Jurnal Refleksi</h2>
+       <p class="sub">Ikut tercetak sebagai lampiran naskah.</p>
+       <div class="fgrid one" id="refForm"></div>
+      </div>
+      <div class="card">
+       <h2>🤖 Umpan Balik AI Lain</h2>
+       <p class="sub">Salin naskah + instruksi agar AI hanya bertanya, tidak menulis ulang.</p>
+       <button class="btn" id="bPrompt" type="button">📋 Salin Prompt Reviu</button>
+      </div>
+     </div>
+    </div>
+   </section>
+
+   <!-- CETAK -->
+   <section class="panel" id="p-cetak" role="tabpanel" aria-labelledby="t-cetak" hidden>
+    <div class="bar">
+     <label class="hint"><input type="checkbox" id="optSb" checked> Storyboard</label>
+     <label class="hint"><input type="checkbox" id="optRef" checked> Jurnal refleksi</label>
+     <span class="sp"></span>
+     <button class="btn primary" data-exp="pdf" type="button">🖨 Cetak / PDF</button>
+     <button class="btn" data-exp="doc" type="button">Word</button>
+     <button class="btn" data-exp="xls" type="button">Excel</button>
+     <button class="btn" data-exp="html" type="button">HTML</button>
+    </div>
+    <div class="docview scrollbox" id="docView"></div>
+   </section>
+
+   <!-- ORDER -->
+   <section class="panel" id="p-order" role="tabpanel" aria-labelledby="t-order" hidden>
+    <div class="cols c-half">
+     <div class="card">
+      <h2>🚦 Alur Pesanan</h2>
+      <p class="sub">Tahap aktif dihitung dari checklist yang sudah dicentang.</p>
+      <div class="cols" style="grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr)">
+       <div class="pipe" id="pipe"></div>
+       <div id="stageDetail"></div>
+      </div>
+     </div>
+     <div class="card">
+      <h2>📝 Brief Klien</h2>
+      <p class="sub">Durasi target & rasio dipakai Asisten Reviu dan Storyboard.</p>
+      <div class="fgrid" id="orderForm"></div>
+     </div>
+    </div>
+   </section>
+
+   <!-- CALL SHEET -->
+   <section class="panel" id="p-callsheet" role="tabpanel" aria-labelledby="t-callsheet" hidden>
+    <div class="cols c-half">
+     <div class="card">
+      <div class="fgrid" id="callForm"></div>
+      <h3>Kru & Talent</h3>
+      <div class="scroll"><table class="tbl" id="crewTbl"></table></div>
+      <button class="btn sm" id="bCrew" type="button" style="margin-top:6px">＋ Kru/Talent</button>
+      <h3>Checklist Alat</h3>
+      <div class="checks gear" id="gearList"></div>
+      <div class="bar" style="margin:6px 0 0"><input type="text" id="gearNew" placeholder="Tambah alat…" aria-label="Nama alat baru" style="max-width:260px"><button class="btn sm" id="bGear" type="button">＋</button></div>
+     </div>
+     <div class="stick">
+      <div class="bar"><b>Pratinjau</b><span class="sp"></span><button class="btn primary" id="bPrintCall" type="button">🖨 Cetak</button><button class="btn" id="bDocCall" type="button">Word</button></div>
+      <div class="docview scrollbox" id="callView"></div>
+     </div>
+    </div>
+   </section>
+
+   <!-- BUDGET -->
+   <section class="panel" id="p-budget" role="tabpanel" aria-labelledby="t-budget" hidden>
+    <div class="cols c-wide">
+     <div class="card">
+      <p class="sub" style="margin-bottom:8px">Harga awal hanya contoh, jadi sesuaikan dengan harga lokal dan aturan keuangan TEFA sekolah.</p>
+      <div class="scroll scrollbox"><table class="tbl" id="budTbl"></table></div>
+      <button class="btn sm" id="bBud" type="button" style="margin-top:8px">＋ Tambah Item</button>
+     </div>
+     <div class="stick">
+      <div class="card">
+       <div class="lbl">Harga penawaran</div>
+       <div class="big" id="bigOffer">Rp 0</div>
+       <div id="budSum" style="margin-top:8px"></div>
+       <div class="bar" style="margin:12px 0 0"><button class="btn primary" id="bPrintBud" type="button">🖨 Cetak RAB</button><button class="btn" id="bViewBud" type="button">👁 Pratinjau</button><button class="btn" id="bXlsBud" type="button">Excel</button></div>
+      </div>
+      <div class="card"><div class="fgrid" id="budParam"></div></div>
+     </div>
+    </div>
+   </section>
+  </main>
+ </div>
+</div>
+
+<!-- Dialogs -->
+<dialog id="dlgTpl" aria-labelledby="dlgTplH">
+ <div class="dlg-h"><h2 id="dlgTplH">📚 Template Produksi</h2><button class="ib" data-close aria-label="Tutup">✕</button></div>
+ <div class="dlg-b">
+  <p class="sub">Template berisi kerangka shot dan <b>pertanyaan pemandu (▸)</b>, bukan naskah jadi. Riset dan jawabannya tetap dikerjakan kelompokmu.</p>
+  <div class="tplgrid" id="tplGrid"></div>
+  <p class="lbl" style="margin-top:12px">Cara memasukkan</p>
+  <label class="hint"><input type="radio" name="tplMode" value="replace" checked> Ganti naskah sekarang</label>&nbsp;
+  <label class="hint"><input type="radio" name="tplMode" value="append"> Tambahkan di akhir</label>
+ </div>
+</dialog>
+
+<dialog id="dlgSketch" aria-labelledby="dlgSkH">
+ <div class="dlg-h"><h2 id="dlgSkH">🎨 Sketsa Shot</h2><button class="ib" data-close aria-label="Tutup">✕</button></div>
+ <div class="dlg-b">
+  <p class="hint" id="skInfo" style="margin-top:0"></p>
+  <div class="bar">
+   <button class="btn" id="skPen" type="button" aria-pressed="true">✏️ Pena</button>
+   <button class="btn" id="skEraser" type="button" aria-pressed="false">🧽 Penghapus</button>
+   <label class="hint">Tebal <input type="range" id="skSize" min="1" max="18" value="3" aria-label="Ketebalan garis"></label>
+   <label class="hint"><input type="checkbox" id="skThirds" checked> Garis sepertiga</label>
+   <label class="btn" for="skFile">🖼 Unggah</label><input type="file" id="skFile" accept="image/*" class="sr">
+   <button class="btn danger" id="skClear" type="button">Bersihkan</button>
+  </div>
+  <div class="canvas-wrap" id="skWrap"><canvas id="skCanvas"></canvas><div class="thirds" id="skGuide"></div></div>
+ </div>
+ <div class="dlg-f"><button class="btn" data-close type="button">Batal</button><button class="btn danger" id="skDel" type="button">Hapus Sketsa</button><button class="btn primary" id="skSave" type="button">Simpan Sketsa</button></div>
+</dialog>
+
+<dialog id="dlgBackup" aria-labelledby="dlgBkH">
+ <div class="dlg-h"><h2 id="dlgBkH">💾 Cadangan Proyek</h2><button class="ib" data-close aria-label="Tutup">✕</button></div>
+ <div class="dlg-b">
+  <p class="sub">Data otomatis tersimpan di browser ini saja. Simpan file cadangan (.json) untuk pindah perangkat, berbagi dengan kelompok, atau dikumpulkan ke guru.</p>
+  <div class="bar"><button class="btn primary" id="bkSave" type="button">⬇ Unduh .json</button><label class="btn" for="bkFile">⬆ Buka Cadangan</label><input type="file" id="bkFile" accept=".json,application/json" class="sr"><button class="btn" id="bkCopy" type="button">📋 Salin Data</button></div>
+ </div>
+</dialog>
+
+<dialog id="dlgView" class="xl" aria-labelledby="dlgVwH">
+ <div class="dlg-h"><h2 id="dlgVwH">👁 Pratinjau RAB</h2><button class="ib" data-close aria-label="Tutup">✕</button></div>
+ <div class="dlg-b"><div class="docview" id="budView"></div></div>
+</dialog>
+
+<dialog id="dlgConfirm" aria-labelledby="dlgCfH">
+ <div class="dlg-h"><h2 id="dlgCfH">Konfirmasi</h2></div>
+ <div class="dlg-b"><p id="cfMsg" style="margin:0"></p></div>
+ <div class="dlg-f"><button class="btn" id="cfNo" type="button">Batal</button><button class="btn primary" id="cfYes" type="button">Ya, lanjutkan</button></div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+<div id="print-area"></div>
+
+<script>
+(()=>{
+'use strict';
+const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+const uid=()=>'s'+Math.random().toString(36).slice(2,10);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nl=s=>esc(s).replace(/\n/g,'<br>');
+const rp=n=>'Rp '+Math.round(+n||0).toLocaleString('id-ID');
+const KEY='ssm_v3_state', TKEY='ssm_v3_theme';
+
+const SIZES=[['ELS','Extreme Long Shot'],['LS','Long Shot'],['FS','Full Shot'],['MLS','Medium Long Shot'],['MS','Medium Shot'],['MCU','Medium Close Up'],['CU','Close Up'],['BCU','Big Close Up'],['ECU','Extreme Close Up'],['OTS','Over The Shoulder'],['POV','Point of View'],['2S','Two Shot'],['INS','Insert / Detail']];
+const SZ=Object.fromEntries(SIZES);
+const ANGLES=['Eye Level','High Angle','Low Angle',"Bird's Eye","Worm's Eye",'Dutch Angle','Overhead'];
+const MOVES=['Static','Pan Kiri','Pan Kanan','Tilt Up','Tilt Down','Zoom In','Zoom Out','Dolly In','Dolly Out','Tracking','Pedestal','Crane / Jib','Handheld','Gimbal Follow','Drone / Aerial','Rack Focus'];
+const AUDIO=['Dialog (Sync)','Wawancara','Voice Over / Narasi','Natural Sound / Ambience','Musik Latar','Musik Diegetik (Live)','SFX','Hening'];
+const WAKTU=['PAGI','SIANG','SORE','MALAM'];
+const STAGES=[
+ {k:'brief',t:'Brief Klien',tab:'order',items:['Pertemuan awal dengan mitra tercatat','Tujuan, target penonton & platform disepakati','Nilai budaya lokal yang akan ditonjolkan disepakati']},
+ {k:'penawaran',t:'Penawaran & Kesepakatan',tab:'budget',items:['RAB disusun & dicek guru pembimbing','Penawaran dikirim ke mitra','Kesepakatan/SPK ditandatangani','Uang muka (bila ada) dicatat']},
+ {k:'pra',t:'Pra-produksi',tab:'naskah',items:['Riset & survei lokasi','Shooting script selesai & lolos Asisten Reviu','Storyboard lengkap','Izin lokasi & narasumber diperoleh','Call sheet dibagikan ke kru']},
+ {k:'prod',t:'Produksi',tab:'lokasi',items:['Semua shot di shot list tercentang','Audio & room tone direkam','Backup footage di 2 media','Log kendala lapangan dicatat']},
+ {k:'pasca',t:'Pascaproduksi',tab:'cetak',items:['Rough cut','Color grading & audio mixing','Subtitle/grafis & musik berlisensi','Quality control internal']},
+ {k:'revisi',t:'Review & Revisi Klien',tab:'order',items:['Draf dikirim ke mitra','Catatan revisi didokumentasikan','Revisi selesai (sesuai batas revisi)']},
+ {k:'serah',t:'Serah Terima & Evaluasi',tab:'order',items:['File master diserahkan sesuai format','Berita acara serah terima','Pelunasan & pembagian dana dicatat','Evaluasi kepuasan mitra & refleksi siswa']}
+];
+const DEF_GEAR=['Kamera + baterai cadangan','Kartu memori (min. 2)','Tripod','Gimbal/stabilizer','Lensa (wide & tele)','Mic clip-on','Shotgun mic + boom','Recorder audio + headphone','Lighting kit + stand','Reflektor','Kabel roll & terminal','Clapperboard','Lembar shooting script & call sheet','Kotak P3K'];
+const DEF_BUD=[['Pra-produksi','Riset & penulisan naskah','paket',1,300000],['Pra-produksi','Survei lokasi (transport)','kali',1,150000],['Produksi','Penyusutan/sewa kamera','hari',1,250000],['Produksi','Lighting kit','hari',1,150000],['Produksi','Perlengkapan audio','hari',1,100000],['Produksi','Konsumsi kru','orang',6,25000],['Produksi','Transport produksi','hari',1,150000],['Produksi','Izin lokasi / apresiasi narasumber','paket',1,200000],['Pascaproduksi','Editing & color grading','paket',1,400000],['Pascaproduksi','Motion graphic & subtitle','paket',1,150000],['Pascaproduksi','Musik berlisensi / bebas royalti','paket',1,0],['Operasional','Media penyimpanan & listrik','paket',1,50000]];
+const REF_Q=[['pesan','Apa pesan utama karya ini dalam satu kalimat?'],['budaya','Nilai budaya lokal apa yang kami jaga, dan bagaimana kami menghormatinya saat merekam?'],['keputusan','Keputusan visual paling sulit yang kami ambil, dan apa alasannya?'],['dampak','Siapa yang akan diuntungkan oleh karya ini (penonton, mitra, komunitas)?']];
+
+const newShot=(o={})=>({id:uid(),scene:1,intext:'EXT',lokasi:'',waktu:'PAGI',size:'MS',angle:'Eye Level',move:'Static',lensa:'',visual:'',audioType:'Natural Sound / Ambience',audio:'',durasi:5,catatan:'',sketch:'',done:false,...o});
+const defState=()=>({v:3,
+ meta:{judul:'',kelompok:'',sutradara:'',kameramen:'',editor:'',tanggal:'',genre:'',sinopsis:''},
+ shots:[],
+ prod:{setupLoc:30,setupShot:8,take:5,move:30},
+ refl:{},
+ order:{klien:'',jenis:'UMKM',pic:'',kontak:'',produk:'',tujuan:'',target:'',platform:'Instagram Reels',rasio:'16:9',durasi:'',deadline:'',nilai:'',pesan:'',budaya:'',revisi:'2',checks:{}},
+ call:{tanggal:'',call:'07:00',kumpul:'',cuaca:'',rs:'',darurat:'',catatan:''},
+ crew:[],
+ gear:DEF_GEAR.map(t=>({id:uid(),t,c:false})),
+ bud:{items:DEF_BUD.map(([kat,item,sat,qty,harga])=>({id:uid(),kat,item,sat,qty,harga})),kont:5,jasa:15,pSiswa:40,pKas:30,pAlat:30}
+});
+
+/* ---------- state, storage, undo ---------- */
+let S=load();
+function load(){try{const r=localStorage.getItem(KEY);if(r){const d=JSON.parse(r);return merge(defState(),d)}}catch(e){}return defState()}
+function merge(a,b){for(const k in b){if(b[k]&&typeof b[k]==='object'&&!Array.isArray(b[k])&&a[k]&&typeof a[k]==='object'&&!Array.isArray(a[k]))a[k]=merge(a[k],b[k]);else a[k]=b[k]}return a}
+let saveT;
+function save(){clearTimeout(saveT);$('#saveState').textContent='Menyimpan…';saveT=setTimeout(()=>{try{localStorage.setItem(KEY,JSON.stringify(S));$('#saveState').textContent='Tersimpan ✓'}catch(e){$('#saveState').textContent='⚠ Penyimpanan browser penuh/tidak tersedia. Unduh cadangan.'}},300)}
+const H={stack:[JSON.stringify(S)],i:0};
+let commitT;
+function commit(){clearTimeout(commitT);const j=JSON.stringify(S);if(j===H.stack[H.i])return;H.stack=H.stack.slice(0,H.i+1);H.stack.push(j);if(H.stack.length>40)H.stack.shift();H.i=H.stack.length-1;undoBtns()}
+function changed(soft){save();if(soft){clearTimeout(commitT);commitT=setTimeout(commit,700)}else commit();dash()}
+function undoBtns(){$('#bUndo').disabled=H.i<=0;$('#bRedo').disabled=H.i>=H.stack.length-1}
+function jump(d){commit();const n=H.i+d;if(n<0||n>=H.stack.length)return;H.i=n;S=merge(defState(),JSON.parse(H.stack[n]));save();renderAll();undoBtns();toast(d<0?'Perubahan diurungkan':'Perubahan diulangi')}
+
+/* ---------- helpers ---------- */
+function toast(m){const t=$('#toast');t.textContent=m;t.classList.add('show');clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2600)}
+function confirmBox(msg){return new Promise(res=>{const d=$('#dlgConfirm');$('#cfMsg').textContent=msg;const done=v=>{d.close();res(v)};$('#cfYes').onclick=()=>done(true);$('#cfNo').onclick=()=>done(false);d.oncancel=()=>res(false);d.showModal();$('#cfNo').focus()})}
+const opts=(arr,v)=>arr.map(o=>{const [val,lab]=Array.isArray(o)?o:[o,o];return `<option value="${esc(val)}"${val===v?' selected':''}>${esc(lab)}</option>`}).join('');
+const fmtDur=s=>{s=Math.round(+s||0);const m=Math.floor(s/60);return String(m).padStart(2,'0')+':'+String(s%60).padStart(2,'0')};
+const toMin=t=>{const [h,m]=(t||'07:00').split(':').map(Number);return (h||0)*60+(m||0)};
+const hm=m=>{m=Math.round(m);return String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStart(2,'0')};
+const slug=s=>`SC ${s.scene||'?'} · ${s.intext}. ${(s.lokasi||'LOKASI?').toUpperCase()} – ${s.waktu}`;
+const totalDur=()=>S.shots.reduce((a,s)=>a+(+s.durasi||0),0);
+const mode=arr=>{const c={};arr.forEach(x=>c[x]=(c[x]||0)+1);let b='-',n=0;for(const k in c)if(c[k]>n){b=k;n=c[k]}return [b,n]};
+function download(name,mime,content){try{const b=new Blob([content],{type:mime});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download=name;document.body.appendChild(a);a.click();setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove()},1500);toast('File '+name+' dibuat')}catch(e){toast('Unduhan tidak didukung di tampilan ini')}}
+async function copy(t,msg){try{await navigator.clipboard.writeText(t);toast(msg||'Tersalin ke clipboard')}catch(e){const ta=document.createElement('textarea');ta.value=t;document.body.appendChild(ta);ta.select();try{document.execCommand('copy');toast(msg||'Tersalin')}catch(_){toast('Gagal menyalin')}ta.remove()}}
+const fname=ext=>((S.meta.judul||'shooting-script').replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'-').toLowerCase()||'shooting-script')+'.'+ext;
+const ratio=()=>S.order.rasio||'16:9';
+const ratioCss=()=>ratio().replace(':','/');
+
+/* ---------- dashboard ---------- */
+function dash(){
+ const sh=S.shots, scenes=new Set(sh.map(s=>s.scene)).size, locs=new Set(sh.map(s=>(s.intext+s.lokasi.trim().toLowerCase()))).size;
+ const [ds,dn]=mode(sh.map(s=>s.size)), [da]=mode(sh.map(s=>s.audioType));
+ const sb=sh.filter(s=>s.sketch).length, done=sh.filter(s=>s.done).length;
+ const tgt=+S.order.durasi||0, tot=totalDur();
+ $('#dash').innerHTML=[
+  ['Scene',scenes,'var(--accent)'],['Shot',sh.length,'var(--accent2)'],['Durasi',fmtDur(tot)+(tgt?` <small>/ ${fmtDur(tgt)}</small>`:''),'var(--teal)'],
+  ['Shot Dominan',ds==='-'?'-':`${esc(ds)} <small>${Math.round(dn/sh.length*100)}%</small>`,'var(--indigo)'],
+  ['Audio Dominan',`<span style="font-size:13px">${esc(da)}</span>`,'var(--ref)'],['Lokasi',locs,'var(--coral)'],['Storyboard',`${sb}<small>/${sh.length}</small>`,'var(--accent2)'],['Terekam',`${done}<small>/${sh.length}</small>`,'var(--ok)']
+ ].map(([l,v,c])=>`<div class="stat" style="--c:${c}"><b title="${esc(String(v).replace(/<[^>]+>/g,''))}">${v}</b><span>${l}</span></div>`).join('');
+}
+
+/* ---------- meta form ---------- */
+const META=[['judul','Judul Produksi','text','w2'],['kelompok','Nama Kelompok / Kelas'],['tanggal','Tanggal Produksi','date'],['sutradara','Sutradara'],['kameramen','Kameramen'],['editor','Editor'],['genre','Genre / Format','text','','Dokumenter, iklan, profil, ILM…'],['sinopsis','Sinopsis / Logline','area','wide','Ceritakan inti karya dalam 2–3 kalimat']];
+function field(scope,k,label,type='text',cls='',ph='',val=''){
+ const id=`${scope}-${k}`;
+ const ctl=type==='area'?`<textarea id="${id}" data-${scope}="${k}" placeholder="${esc(ph)}">${esc(val)}</textarea>`:`<input type="${type}" id="${id}" data-${scope}="${k}" value="${esc(val)}" placeholder="${esc(ph)}">`;
+ return `<div class="fld ${cls}"><label for="${id}">${label}</label>${ctl}</div>`;
+}
+function renderMeta(){$('#metaForm').innerHTML=META.map(([k,l,t,c,p])=>field('meta',k,l,t,c,p,S.meta[k])).join('')}
+
+/* ---------- shots ---------- */
+function shotCard(s,i,n){
+ const f=(k,l,ctl,cls='')=>`<div class="fld ${cls}"><label for="${s.id}-${k}">${l}</label>${ctl}</div>`;
+ const sel=(k,arr)=>`<select id="${s.id}-${k}" data-k="${k}">${opts(arr,s[k])}</select>`;
+ const inp=(k,t='text',ph='')=>`<input type="${t}" id="${s.id}-${k}" data-k="${k}" value="${esc(s[k])}" placeholder="${esc(ph)}"${t==='number'?' min="0" step="1"':''}>`;
+ const ta=(k,ph)=>`<textarea id="${s.id}-${k}" data-k="${k}" placeholder="${esc(ph)}">${esc(s[k])}</textarea>`;
+ const open=OPEN.has(s.id);
+ return `<article class="shot${open?' open':''}" data-id="${s.id}" aria-label="Shot ${i+1}">
+ <div class="shot-h">
+  <button class="drag" type="button" data-drag aria-label="Seret untuk memindah shot ${i+1}" title="Seret untuk memindah">⠿</button>
+  <span class="no">${i+1}</span>${s.sketch?`<span class="mini" style="background-image:url(${s.sketch})" aria-hidden="true"></span>`:''}
+  <button class="sum" type="button" data-act="toggle" aria-expanded="${open}" aria-controls="b-${s.id}" aria-label="Buka/tutup detail shot ${i+1}"><span class="sumtxt" data-sum>${sumHTML(s)}</span><span class="bdg" data-bdg>${bdgHTML(s)}</span><span class="chev" aria-hidden="true">▾</span></button>
+  <div class="shot-act">
+   <button class="ib" type="button" data-act="up" aria-label="Naikkan shot ${i+1}" ${i===0?'disabled':''}>↑</button>
+   <button class="ib" type="button" data-act="down" aria-label="Turunkan shot ${i+1}" ${i===n-1?'disabled':''}>↓</button>
+   <button class="ib" type="button" data-act="sketch" aria-label="Sketsa storyboard shot ${i+1}" title="Sketsa">✏️</button>
+   <button class="ib" type="button" data-act="dup" aria-label="Gandakan shot ${i+1}" title="Gandakan">⧉</button>
+   <button class="ib" type="button" data-act="del" aria-label="Hapus shot ${i+1}" title="Hapus">🗑</button>
+  </div>
+ </div>
+ <div class="shot-b" id="b-${s.id}"${open?'':' hidden'}>
+  ${f('scene','Scene #',inp('scene','number'))}
+  ${f('intext','INT / EXT',sel('intext',[['INT','INT'],['EXT','EXT'],['INT/EXT','INT/EXT']]))}
+  ${f('lokasi','Lokasi',inp('lokasi','text','Misal: Bengkel perajin Dol'),'g2')}
+  ${f('waktu','Waktu',sel('waktu',WAKTU))}
+  ${f('durasi','Durasi (detik)',inp('durasi','number'))}
+  ${f('size','Ukuran Shot',sel('size',SIZES.map(([a,b])=>[a,a+' – '+b])))}
+  ${f('angle','Sudut',sel('angle',ANGLES))}
+  ${f('move','Pergerakan',sel('move',MOVES))}
+  ${f('lensa','Lensa / Setting',inp('lensa','text','24mm, f/2.8, 50fps'))}
+  ${f('audioType','Tipe Audio',sel('audioType',AUDIO),'g2')}
+  ${f('visual','Visual (Video)',ta('visual','Siapa/apa yang terlihat, sedang apa, komposisinya bagaimana?'),'g3')}
+  ${f('audio','Spesifikasi Audio',ta('audio','Dialog/narasi, mic, ambience…'),'g3')}
+  ${f('catatan','Catatan Sutradara',ta('catatan','Emosi, ritme, keamanan, izin…'),'g6')}
+ </div></article>`;
+}
+const OPEN=new Set();
+const sizeCls=z=>['ELS','LS','FS'].includes(z)?'w':['CU','BCU','ECU','INS','POV'].includes(z)?'c':'m';
+const sumHTML=s=>`<span class="slug">${esc(slug(s))}</span><span class="vis">${esc(s.visual||'— visual belum diisi —')}</span>`;
+const bdgHTML=s=>`<span class="bz ${sizeCls(s.size)}" title="${esc(SZ[s.size]||'')}">${esc(s.size)}</span><span class="bd">${esc(s.angle)}</span><span class="bd">${esc(s.move)}</span><span class="bd dur">${+s.durasi||0}″</span>`;
+function setOpen(card,on){const id=card.dataset.id;on?OPEN.add(id):OPEN.delete(id);card.classList.toggle('open',on);$('.shot-b',card).hidden=!on;$('[data-act=toggle]',card).setAttribute('aria-expanded',on);expandLbl()}
+function expandLbl(){const all=S.shots.length&&S.shots.every(s=>OPEN.has(s.id));$('#bExpand').textContent=all?'⇕ Tutup semua':'⇕ Buka semua'}
+function renderShots(){
+ const box=$('#shots');
+ if(!S.shots.length){box.innerHTML=`<div class="empty"><p><b>Belum ada shot.</b></p><p>Mulai dengan <b>＋ Tambah Shot</b> atau pilih kerangka dari <b>📚 Template</b>.</p></div>`;return}
+ box.innerHTML=S.shots.map((s,i)=>shotCard(s,i,S.shots.length)).join('');expandLbl();
+}
+$('#bExpand').onclick=()=>{const all=S.shots.every(s=>OPEN.has(s.id));S.shots.forEach(s=>all?OPEN.delete(s.id):OPEN.add(s.id));renderShots()};
+function idx(id){return S.shots.findIndex(s=>s.id===id)}
+function addShot(newScene){
+ const last=S.shots[S.shots.length-1];
+ const s=last?newShot({scene:newScene?(+last.scene||0)+1:last.scene,intext:last.intext,lokasi:newScene?'':last.lokasi,waktu:last.waktu}):newShot();
+ S.shots.push(s);OPEN.add(s.id);renderShots();changed();
+ const el=$(`[data-id="${s.id}"]`);el.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById(`${s.id}-${newScene?'lokasi':'visual'}`).focus({preventScroll:true});
+ toast(newScene?'Scene baru ditambahkan':'Shot ditambahkan');
+}
+function moveShot(i,j,focusAct){if(j<0||j>=S.shots.length)return;const [x]=S.shots.splice(i,1);S.shots.splice(j,0,x);renderShots();changed();const b=$(`[data-id="${x.id}"] [data-act="${focusAct||'up'}"]`);if(b){(b.disabled?$(`[data-id="${x.id}"] [data-drag]`):b).focus()}}
+
+$('#shots').addEventListener('input',e=>{
+ const k=e.target.dataset.k;if(!k)return;const card=e.target.closest('.shot');const s=S.shots[idx(card.dataset.id)];
+ s[k]=e.target.type==='number'?(e.target.value===''?'':+e.target.value):e.target.value;
+ if(['scene','intext','lokasi','waktu','visual'].includes(k))$('[data-sum]',card).innerHTML=sumHTML(s);
+ if(['size','angle','move','durasi'].includes(k))$('[data-bdg]',card).innerHTML=bdgHTML(s);
+ changed(e.target.tagName!=='SELECT');
+});
+$('#shots').addEventListener('click',async e=>{
+ const b=e.target.closest('[data-act]');if(!b)return;const card=b.closest('.shot');const i=idx(card.dataset.id);const a=b.dataset.act;
+ if(a==='toggle'){setOpen(card,!card.classList.contains('open'));if(card.classList.contains('open'))document.getElementById(`${card.dataset.id}-visual`).focus({preventScroll:true});return}
+ if(a==='up')moveShot(i,i-1,'up');
+ else if(a==='down')moveShot(i,i+1,'down');
+ else if(a==='dup'){const c={...S.shots[i],id:uid(),done:false};OPEN.add(c.id);S.shots.splice(i+1,0,c);renderShots();changed();toast('Shot digandakan')}
+ else if(a==='del'){if(await confirmBox(`Hapus shot ${i+1}? Kamu masih bisa mengurungkannya.`)){S.shots.splice(i,1);renderShots();changed();toast('Shot dihapus · tekan Urungkan untuk membatalkan')}}
+ else if(a==='sketch')openSketch(S.shots[i].id);
+});
+// drag & drop (mouse) via handle
+let dragId=null;
+$('#shots').addEventListener('pointerdown',e=>{const h=e.target.closest('[data-drag]');if(!h)return;const c=h.closest('.shot');c.draggable=true});
+$('#shots').addEventListener('dragstart',e=>{const c=e.target.closest('.shot');if(!c)return;dragId=c.dataset.id;c.classList.add('dragging');e.dataTransfer.effectAllowed='move';try{e.dataTransfer.setData('text/plain',dragId)}catch(_){}});
+$('#shots').addEventListener('dragover',e=>{if(!dragId)return;e.preventDefault();const c=e.target.closest('.shot');$$('.shot.over').forEach(x=>x!==c&&x.classList.remove('over'));if(c&&c.dataset.id!==dragId)c.classList.add('over')});
+$('#shots').addEventListener('drop',e=>{if(!dragId)return;e.preventDefault();const c=e.target.closest('.shot');if(c&&c.dataset.id!==dragId){moveShot(idx(dragId),idx(c.dataset.id))}dragEnd()});
+$('#shots').addEventListener('dragend',dragEnd);
+function dragEnd(){dragId=null;$$('.shot').forEach(c=>{c.classList.remove('dragging','over');c.draggable=false})}
+// keyboard on handle
+$('#shots').addEventListener('keydown',e=>{const h=e.target.closest('[data-drag]');if(!h)return;const i=idx(h.closest('.shot').dataset.id);if(e.key==='ArrowUp'){e.preventDefault();moveShot(i,i-1);$(`[data-id="${S.shots[Math.max(0,i-1)].id}"] [data-drag]`).focus()}if(e.key==='ArrowDown'){e.preventDefault();moveShot(i,i+1);$(`[data-id="${S.shots[Math.min(S.shots.length-1,i+1)].id}"] [data-drag]`).focus()}});
+
+/* ---------- storyboard ---------- */
+function renderSB(){
+ const g=$('#sbGrid');
+ if(!S.shots.length){g.innerHTML='<div class="empty" style="grid-column:1/-1">Tambahkan shot di tab Naskah terlebih dahulu.</div>';return}
+ g.innerHTML=S.shots.map((s,i)=>`<div class="frame"><button class="pic" type="button" data-sk="${s.id}" style="aspect-ratio:${ratioCss()};${s.sketch?`background-image:url(${s.sketch})`:''}" aria-label="${s.sketch?'Ubah':'Buat'} sketsa shot ${i+1}"><span class="no n">${i+1}</span>${s.sketch?'':'✏️ Klik untuk menggambar'}</button>
+ <div class="cap"><div class="bdg" style="flex-wrap:wrap">${bdgHTML(s)}</div><div class="slug" style="margin-top:4px">${esc(slug(s))}</div><div class="vis">${esc(s.visual||'')}</div></div></div>`).join('');
+}
+$('#sbGrid').addEventListener('click',e=>{const b=e.target.closest('[data-sk]');if(b)openSketch(b.dataset.sk)});
+
+const cv=$('#skCanvas'),cx=cv.getContext('2d');let skId=null,tool='pen',drawing=false,last=null,dirty=false;
+function cvSize(){const r=ratio();return r==='9:16'?[270,480]:r==='1:1'?[360,360]:r==='4:3'?[400,300]:[480,270]}
+function openSketch(id){
+ skId=id;const i=idx(id),s=S.shots[i];const [w,h]=cvSize();const k=2;cv.width=w*k;cv.height=h*k;
+ const wrap=$('#skWrap');wrap.style.aspectRatio=`${w}/${h}`;wrap.style.maxWidth=(h>w?Math.min(340,w*1.3):700)+'px';
+ cx.setTransform(1,0,0,1,0,0);cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);cx.lineCap='round';cx.lineJoin='round';dirty=false;
+ if(s.sketch){const im=new Image();im.onload=()=>cx.drawImage(im,0,0,cv.width,cv.height);im.src=s.sketch}
+ $('#skInfo').textContent=`Shot ${i+1} · ${s.size} (${SZ[s.size]||''}) · ${s.angle} · ${s.move} — ${slug(s)}`;
+ setTool('pen');$('#dlgSketch').showModal();
+}
+function setTool(t){tool=t;$('#skPen').setAttribute('aria-pressed',t==='pen');$('#skEraser').setAttribute('aria-pressed',t==='eraser');$('#skPen').classList.toggle('primary',t==='pen');$('#skEraser').classList.toggle('primary',t==='eraser')}
+$('#skPen').onclick=()=>setTool('pen');$('#skEraser').onclick=()=>setTool('eraser');
+$('#skThirds').onchange=e=>$('#skGuide').hidden=!e.target.checked;
+const pt=e=>{const r=cv.getBoundingClientRect();return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]};
+cv.addEventListener('pointerdown',e=>{drawing=true;last=pt(e);cv.setPointerCapture(e.pointerId);dot(last);});
+cv.addEventListener('pointermove',e=>{if(!drawing)return;const p=pt(e);line(last,p);last=p});
+['pointerup','pointercancel','pointerleave'].forEach(t=>cv.addEventListener(t,()=>drawing=false));
+function stroke(){const sz=+$('#skSize').value*2;cx.strokeStyle=tool==='eraser'?'#fff':'#1d1b18';cx.fillStyle=cx.strokeStyle;cx.lineWidth=tool==='eraser'?sz*4:sz;dirty=true}
+function line(a,b){stroke();cx.beginPath();cx.moveTo(...a);cx.lineTo(...b);cx.stroke()}
+function dot(p){stroke();cx.beginPath();cx.arc(p[0],p[1],cx.lineWidth/2,0,Math.PI*2);cx.fill()}
+$('#skClear').onclick=()=>{cx.fillStyle='#fff';cx.fillRect(0,0,cv.width,cv.height);dirty=true};
+$('#skFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const im=new Image();im.onload=()=>{const s=Math.max(cv.width/im.width,cv.height/im.height);const w=im.width*s,h=im.height*s;cx.drawImage(im,(cv.width-w)/2,(cv.height-h)/2,w,h);dirty=true;URL.revokeObjectURL(im.src)};im.src=URL.createObjectURL(f);e.target.value=''};
+function exportSketch(){const [w,h]=cvSize();const t=document.createElement('canvas');t.width=w;t.height=h;t.getContext('2d').drawImage(cv,0,0,w,h);return t.toDataURL('image/jpeg',.72)}
+$('#skSave').onclick=()=>{const s=S.shots[idx(skId)];if(s){s.sketch=exportSketch();changed();renderSB();renderShots();}$('#dlgSketch').close();toast('Sketsa disimpan')};
+$('#skDel').onclick=()=>{const s=S.shots[idx(skId)];if(s){s.sketch='';changed();renderSB();renderShots()}$('#dlgSketch').close();toast('Sketsa dihapus')};
+
+/* ---------- shot list per lokasi ---------- */
+function groups(){
+ const m=new Map();
+ S.shots.forEach((s,i)=>{const key=`${s.intext}|${s.lokasi.trim().toLowerCase()}|${s.waktu}`;if(!m.has(key))m.set(key,{intext:s.intext,lokasi:s.lokasi.trim()||'(lokasi belum diisi)',waktu:s.waktu,items:[]});m.get(key).items.push({s,i})});
+ const p=S.prod;
+ return [...m.values()].sort((a,b)=>WAKTU.indexOf(a.waktu)-WAKTU.indexOf(b.waktu)||a.lokasi.localeCompare(b.lokasi)).map(g=>{g.min=(+p.setupLoc||0)+g.items.reduce((a,{s})=>a+(+p.setupShot||0)+(+s.durasi||0)*(+p.take||1)/60,0);g.dur=g.items.reduce((a,{s})=>a+(+s.durasi||0),0);return g});
+}
+function renderLoc(){
+ ['setupLoc','setupShot','take','move'].forEach(k=>{const el=$(`[data-prod="${k}"]`);if(document.activeElement!==el)el.value=S.prod[k]});
+ const G=groups(),box=$('#locList');
+ if(!G.length){box.innerHTML='<div class="empty">Belum ada shot.</div>';$('#locInfo').textContent='';return}
+ const total=G.reduce((a,g)=>a+g.min,0)+(G.length-1)*(+S.prod.move||0);
+ $('#locInfo').innerHTML=`<b>${G.length} lokasi</b> · estimasi syuting ±${Math.floor(total/60)} jam ${Math.round(total%60)} menit (termasuk pindah lokasi). Centang shot yang sudah direkam.`;
+ box.innerHTML=`<div class="locs">`+G.map((g,gi)=>`<details class="loc" open><summary><span class="ord">${gi+1}</span> ${esc(g.intext)}. ${esc(g.lokasi.toUpperCase())} – ${esc(g.waktu)}<span class="sp"></span><span class="hint">${g.items.length} shot · ${fmtDur(g.dur)} · ±${Math.round(g.min)} mnt</span></summary>
+ <div class="scroll"><table class="tbl"><thead><tr><th scope="col">Rekam</th><th scope="col">Shot</th><th scope="col">Scene</th><th scope="col">Kamera</th><th scope="col">Visual</th><th scope="col" class="num">Durasi</th></tr></thead><tbody>
+ ${g.items.map(({s,i})=>`<tr><td><input type="checkbox" data-done="${s.id}" ${s.done?'checked':''} aria-label="Shot ${i+1} sudah direkam" style="width:20px;height:20px;accent-color:var(--accent)"></td><td><b>${i+1}</b></td><td>${esc(s.scene)}</td><td><span class="bz ${sizeCls(s.size)}">${esc(s.size)}</span><br><span class="hint">${esc(s.angle)} · ${esc(s.move)}</span></td><td>${esc(s.visual)}<br><span class="hint">🔊 ${esc(s.audioType)}</span></td><td class="num">${+s.durasi||0}″</td></tr>`).join('')}
+ </tbody></table></div></details>`).join('')+`</div>`;
+}
+$('#locList').addEventListener('change',e=>{const id=e.target.dataset.done;if(!id)return;S.shots[idx(id)].done=e.target.checked;changed()});
+$$('[data-prod]').forEach(el=>el.addEventListener('input',()=>{S.prod[el.dataset.prod]=+el.value;changed(true);renderLoc()}));
+
+/* ---------- review ---------- */
+function review(){
+ const F=[],sh=S.shots,m=S.meta,o=S.order;const add=(lvl,t,q,i)=>F.push({lvl,t,q,i});
+ if(!sh.length){add('perlu','Naskah masih kosong','Cerita apa yang ingin kamu sampaikan, dan gambar pertama apa yang akan dilihat penonton?');return F}
+ const miss=[['judul','judul'],['sutradara','sutradara'],['kameramen','kameramen'],['editor','editor']].filter(([k])=>!m[k].trim()).map(x=>x[1]);
+ if(miss.length)add('perlu','Identitas produksi belum lengkap: '+miss.join(', '),'Siapa bertanggung jawab atas setiap keputusan kreatif di kelompokmu?');
+ if(!m.sinopsis.trim())add('saran','Sinopsis/logline belum ada','Jika penonton hanya boleh mengingat satu hal dari karya ini, apa hal itu?');
+ sh.forEach((s,i)=>{const n=i+1;
+  if(/▸/.test(s.visual+s.audio+s.catatan))add('perlu',`Shot ${n}: masih berisi pertanyaan pemandu template (▸)`,'Apa jawabanmu sendiri berdasarkan riset dan survei lapangan?',i);
+  else if((s.visual||'').trim().length<20)add('perlu',`Shot ${n}: deskripsi visual terlalu singkat`,'Siapa/apa yang terlihat, sedang melakukan apa, dan di bagian mana bingkai subjek berada?',i);
+  if(!s.lokasi.trim())add('perlu',`Shot ${n}: lokasi belum diisi`,'Ke mana tepatnya kru harus datang untuk mengambil shot ini?',i);
+  if(!(+s.durasi>0))add('perlu',`Shot ${n}: durasi belum diisi`,'Berapa lama penonton perlu melihat gambar ini agar pesannya tertangkap?',i);
+  if(!(s.audio||'').trim()&&s.audioType!=='Hening')add('saran',`Shot ${n}: spesifikasi audio kosong`,'Mikrofon apa yang dipakai, di mana posisinya, dan suara apa yang harus terdengar paling jelas?',i);
+  if(+s.durasi>20&&s.move==='Static'&&!['Wawancara','Dialog (Sync)'].includes(s.audioType))add('refleksi',`Shot ${n}: statis ${s.durasi} detik`,'Apa yang membuat penonton tetap memperhatikan selama itu? Apakah perlu pergerakan atau sisipan shot lain?',i);
+  if(s.move==='Drone / Aerial')add('perlu',`Shot ${n}: memakai drone`,'Apakah izin terbang, jarak aman dari kerumunan, dan pilot berpengalaman sudah dipastikan?',i);
+  if(s.intext==='EXT'&&s.waktu==='MALAM')add('saran',`Shot ${n}: eksterior malam`,'Sumber cahaya apa yang tersedia di lokasi? Apakah ISO dan bukaan lensamu cukup tanpa merusak suasana?',i);
+  if(s.audioType==='Musik Latar')add('refleksi',`Shot ${n}: musik latar`,'Dari mana musiknya, dan apakah lisensinya boleh dipakai untuk karya yang dipublikasikan atau dijual (TEFA)?',i);
+  if(s.move==='Handheld'&&+s.durasi>15)add('refleksi',`Shot ${n}: handheld panjang`,'Apakah guncangan kamera mendukung emosi adegan, atau justru mengganggu?',i);
+  if(i>0){const p=sh[i-1];if(String(p.scene)===String(s.scene)&&p.size===s.size&&p.angle===s.angle&&p.move===s.move)add('saran',`Shot ${i}→${n}: ukuran & sudut sama`,'Jika dua shot berurutan nyaris sama, potongannya akan terasa melompat (jump cut). Bagaimana mengubah ukuran shot atau sudut minimal 30°?',i)}
+ });
+ const scenes=[...new Set(sh.map(s=>String(s.scene)))];
+ scenes.forEach(sc=>{const first=sh.findIndex(s=>String(s.scene)===sc);if(!['ELS','LS','FS'].includes(sh[first].size))add('refleksi',`Scene ${sc} tidak dibuka dengan shot lebar`,'Bagaimana penonton tahu di mana mereka berada? Apakah itu disengaja untuk membangun rasa penasaran?',first)});
+ const wcw=sh.filter(s=>s.audioType==='Wawancara').length,ins=sh.filter(s=>['INS','CU','ECU','BCU'].includes(s.size)&&s.audioType!=='Wawancara').length;
+ if(wcw&&ins<wcw)add('saran',`${wcw} shot wawancara, hanya ${ins} shot detail/B-roll`,'Gambar apa yang bisa memperlihatkan apa yang diceritakan narasumber, bukan hanya wajahnya?');
+ const [ds,dn]=mode(sh.map(s=>s.size));if(sh.length>=5&&dn/sh.length>.6)add('refleksi',`${Math.round(dn/sh.length*100)}% shot berukuran ${ds}`,'Apakah variasi ukuran shot sudah cukup untuk membangun ritme dan emosi?');
+ const dutch=sh.filter(s=>s.angle==='Dutch Angle').length;if(dutch>2)add('refleksi',`Dutch angle dipakai ${dutch} kali`,'Dutch angle memberi kesan tidak stabil. Emosi apa yang ingin kamu bangun di setiap shot itu?');
+ const tgt=+o.durasi,tot=totalDur();if(tgt&&Math.abs(tot-tgt)/tgt>.2)add('saran',`Total durasi ${fmtDur(tot)}, target klien ${fmtDur(tgt)}`,tot>tgt?'Shot mana yang paling tidak penting bagi pesan utama dan bisa dipangkas?':'Bagian cerita mana yang perlu diperdalam agar sesuai durasi pesanan?');
+ const sb=sh.filter(s=>s.sketch).length;if(sh.length>=3&&sb/sh.length<.5)add('saran',`Storyboard baru ${sb} dari ${sh.length} shot`,'Bisakah kru membayangkan komposisi setiap shot tanpa sketsa?');
+ if(o.rasio==='9:16'){const wide=sh.filter(s=>['ELS','LS'].includes(s.size)).length;if(wide>sh.length/3)add('refleksi','Video vertikal (9:16) dengan banyak shot lebar','Di layar ponsel vertikal, apakah detail penting masih terlihat pada shot lebar?')}
+ const all=(sh.map(s=>s.visual+' '+s.lokasi+' '+s.catatan).join(' ')+' '+m.judul+' '+m.genre+' '+m.sinopsis+' '+o.budaya).toLowerCase();
+ if(/tabot|dol\b|tassa|besurek|adat|ritual|sakral|upacara|tradisi|makam|leluhur|kerajinan/.test(all)){
+  add('perlu','Etika merekam budaya: izin','Sudah meminta izin kepada pemangku adat/keluarga penyelenggara dan narasumber? Apakah izin itu tercatat?');
+  add('perlu','Etika merekam budaya: momen sakral','Bagian mana dari ritual yang tidak boleh direkam atau disorot lampu? Siapa yang memberi tahu kalian?');
+  add('refleksi','Etika merekam budaya: akurasi & kredit','Istilah, sejarah, dan makna yang kalian tampilkan sudah dicek ke lebih dari satu sumber? Bagaimana komunitas pemilik budaya disebut dalam kredit?');
+ }
+ if(!sh.some(s=>(s.catatan||'').trim()))add('refleksi','Belum ada catatan sutradara','Apa yang harus dirasakan penonton di setiap scene, dan bagaimana kru tahu itu?');
+ return F;
+}
+let revF='semua';
+function renderReview(){
+ const all=review(),c={perlu:0,saran:0,refleksi:0};all.forEach(f=>c[f.lvl]++);const F=revF==='semua'?all:all.filter(f=>f.lvl===revF);
+ $('#revChips').innerHTML=[['semua','Semua',all.length],['perlu','Perlu',c.perlu],['saran','Saran',c.saran],['refleksi','Refleksi',c.refleksi]].map(([k,l,n])=>`<button type="button" class="chip" data-rf="${k}" aria-pressed="${revF===k}">${l} · ${n}</button>`).join('');
+ $('#revSum').textContent='';
+ $('#findings').innerHTML=F.length?F.map(f=>`<div class="finding ${f.lvl}"><span class="lv">${f.lvl}</span><b>${esc(f.t)}</b><p class="q">${esc(f.q)}</p>${f.i!=null?`<div class="go"><button class="btn sm ghost" type="button" data-goto="${f.i}">Buka shot ${f.i+1} →</button></div>`:''}</div>`).join(''):'<div class="finding saran"><b>Tidak ada temuan.</b><p>Lanjutkan dengan diskusi kelompok dan jurnal refleksi.</p></div>';
+}
+$('#bReview').onclick=()=>{renderReview();toast('Reviu selesai')};
+$('#revChips').addEventListener('click',e=>{const b=e.target.closest('[data-rf]');if(b){revF=b.dataset.rf;renderReview()}});
+$('#findings').addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(!b)return;const s=S.shots[+b.dataset.goto];OPEN.add(s.id);showTab('naskah');renderShots();setTimeout(()=>{const el=$(`[data-id="${s.id}"]`);el.scrollIntoView({behavior:'smooth',block:'center'});document.getElementById(`${s.id}-visual`).focus({preventScroll:true})},60)});
+function renderRef(){$('#refForm').innerHTML=REF_Q.map(([k,q])=>field('refl',k,q,'area','wide','',S.refl[k]||'')).join('')}
+$('#bPrompt').onclick=()=>{
+ const txt=`Kamu adalah mentor produksi film untuk siswa SMK Penyiaran TV & Film. ATURAN: Jangan menulis ulang atau membuatkan isi naskah. Beri umpan balik HANYA dalam bentuk (1) pengamatan singkat dan (2) pertanyaan reflektif yang membantu siswa memutuskan sendiri. Fokus: kejelasan cerita, variasi & kontinuitas shot, kesiapan audio, keamanan produksi, serta etika merekam budaya lokal (izin, momen sakral, akurasi, kredit komunitas). Maksimal 10 poin, urutkan dari yang paling penting.\n\nJUDUL: ${S.meta.judul}\nGENRE: ${S.meta.genre}\nSINOPSIS: ${S.meta.sinopsis}\nTARGET DURASI: ${S.order.durasi||'-'} detik · RASIO: ${ratio()}\n\nSHOOTING SCRIPT:\n`+S.shots.map((s,i)=>`${i+1}. ${slug(s)} | ${s.size} ${s.angle} ${s.move} ${s.lensa} | VISUAL: ${s.visual} | AUDIO (${s.audioType}): ${s.audio} | ${s.durasi} dtk | CATATAN: ${s.catatan}`).join('\n');
+ copy(txt,'Prompt reviu tersalin — tempelkan ke asisten AI');
+};
+
+/* ---------- documents ---------- */
+const DOC_CSS=`.d{font:11pt/1.4 Arial,Helvetica,sans-serif;color:#111}.d h1{font-size:16pt;margin:0 0 2px}.d h2{font-size:12.5pt;margin:16px 0 6px;border-bottom:2px solid #9a3412;padding-bottom:3px}.d .meta{border-collapse:collapse;margin:8px 0 10px}.d .meta td{padding:2px 14px 2px 0;font-size:10pt;vertical-align:top}.d table.t{width:100%;border-collapse:collapse;font-size:9.5pt}.d table.t th,.d table.t td{border:1px solid #888;padding:4px 5px;vertical-align:top;text-align:left}.d table.t th{background:#f3e6dc}.d .sl{background:#eee;font-weight:bold}.d .r{text-align:right}.d img{display:block;max-width:150px;border:1px solid #aaa}.d .foot{margin-top:14px;font-size:8.5pt;color:#555}.d .sig{display:flex;gap:40px;margin-top:30px;font-size:10pt}.d .sig div{flex:1;text-align:center}.d .sbg{display:flex;flex-wrap:wrap;gap:10px}.d .sbg figure{margin:0;width:31%;font-size:8.5pt}.d .sbg img{max-width:100%;width:100%}`;
+function metaTbl(){const m=S.meta;return `<table class="meta"><tr><td><b>Judul</b></td><td>${esc(m.judul)||'-'}</td><td><b>Sutradara</b></td><td>${esc(m.sutradara)||'-'}</td></tr><tr><td><b>Kelompok/Kelas</b></td><td>${esc(m.kelompok)||'-'}</td><td><b>Kameramen</b></td><td>${esc(m.kameramen)||'-'}</td></tr><tr><td><b>Tanggal</b></td><td>${esc(m.tanggal)||'-'}</td><td><b>Editor</b></td><td>${esc(m.editor)||'-'}</td></tr><tr><td><b>Genre</b></td><td>${esc(m.genre)||'-'}</td><td><b>Total</b></td><td>${S.shots.length} shot · ${fmtDur(totalDur())}</td></tr></table>${m.sinopsis?`<p style="font-size:10pt"><b>Sinopsis:</b> ${nl(m.sinopsis)}</p>`:''}`}
+function scriptDoc(withSb,withRef){
+ let rows='',prev='';
+ S.shots.forEach((s,i)=>{const sl=slug(s);if(sl!==prev){rows+=`<tr><td colspan="${withSb?8:7}" class="sl">${esc(sl)}</td></tr>`;prev=sl}
+  rows+=`<tr><td>${i+1}</td><td><b>${esc(s.size)}</b><br>${esc(s.angle)}<br>${esc(s.move)}${s.lensa?'<br><i>'+esc(s.lensa)+'</i>':''}</td><td>${nl(s.visual)}</td><td><b>${esc(s.audioType)}</b><br>${nl(s.audio)}</td><td class="r">${+s.durasi||0}″</td><td>${nl(s.catatan)}</td>${withSb?`<td>${s.sketch?`<img src="${s.sketch}" alt="Sketsa shot ${i+1}">`:''}</td>`:''}<td style="width:22px"></td></tr>`});
+ const ref=withRef&&REF_Q.some(([k])=>(S.refl[k]||'').trim())?`<h2>Lampiran: Jurnal Refleksi Kelompok</h2>${REF_Q.map(([k,q])=>`<p style="font-size:10pt"><b>${esc(q)}</b><br>${nl(S.refl[k]||'-')}</p>`).join('')}`:'';
+ return `<div class="d"><h1>SHOOTING SCRIPT</h1>${metaTbl()}
+ <table class="t"><thead><tr><th>No</th><th>Shot / Movement</th><th>Visual (Video)</th><th>Audio</th><th>Durasi</th><th>Catatan Sutradara</th>${withSb?'<th>Storyboard</th>':''}<th>✓</th></tr></thead><tbody>${rows||'<tr><td colspan="8">Belum ada shot.</td></tr>'}</tbody></table>${ref}</div>`;
+}
+function schedule(){
+ const c=S.call,G=groups();let t=toMin(c.call)+30;const out=[{a:toMin(c.call),b:t,x:'Kru berkumpul, briefing keselamatan & cek alat',l:c.kumpul||'-'}];let lunch=false;
+ G.forEach((g,gi)=>{if(gi>0){out.push({a:t,b:t+(+S.prod.move||0),x:'Pindah lokasi & persiapan',l:'-'});t+=+S.prod.move||0}
+  if(!lunch&&t>=12*60){out.push({a:t,b:t+60,x:'ISHOMA',l:'-'});t+=60;lunch=true}
+  out.push({a:t,b:t+g.min,x:`${g.intext}. ${g.lokasi.toUpperCase()} – ${g.waktu}: shot ${g.items.map(x=>x.i+1).join(', ')}`,l:g.lokasi});t+=g.min});
+ out.push({a:t,b:t+30,x:'Wrap: backup footage, cek & kemas alat',l:'-'});return out;
+}
+function callDoc(){
+ const c=S.call,m=S.meta,o=S.order;
+ const crew=S.crew.length?S.crew.map(r=>`<tr><td>${esc(r.peran)}</td><td>${esc(r.nama)}</td><td>${esc(r.kontak)}</td><td>${esc(r.call||c.call)}</td></tr>`).join(''):'<tr><td colspan="4">Belum diisi</td></tr>';
+ const sch=schedule().map(r=>`<tr><td>${hm(r.a)}–${hm(r.b)}</td><td>${esc(r.x)}</td></tr>`).join('');
+ const gear=S.gear.map(g=>`<li>${g.c?'☑':'☐'} ${esc(g.t)}</li>`).join('');
+ return `<div class="d"><h1>CALL SHEET</h1><div style="font-size:9.5pt;color:#555">Teaching Factory · Penyiaran TV & Film</div>
+ <table class="meta"><tr><td><b>Produksi</b></td><td>${esc(m.judul)||'-'}</td><td><b>Klien</b></td><td>${esc(o.klien)||'-'}</td></tr><tr><td><b>Tanggal</b></td><td>${esc(c.tanggal||m.tanggal)||'-'}</td><td><b>Call time</b></td><td><b>${esc(c.call)}</b></td></tr><tr><td><b>Titik kumpul</b></td><td>${esc(c.kumpul)||'-'}</td><td><b>Prakiraan cuaca</b></td><td>${esc(c.cuaca)||'-'}</td></tr><tr><td><b>Sutradara</b></td><td>${esc(m.sutradara)||'-'}</td><td><b>Rasio/Durasi</b></td><td>${esc(ratio())} · ${o.durasi?fmtDur(o.durasi):'-'}</td></tr></table>
+ <h2>Jadwal</h2><table class="t"><thead><tr><th style="width:110px">Waktu</th><th>Kegiatan</th></tr></thead><tbody>${sch}</tbody></table>
+ <h2>Kru & Talent</h2><table class="t"><thead><tr><th>Peran</th><th>Nama</th><th>Kontak</th><th>Call</th></tr></thead><tbody>${crew}</tbody></table>
+ <h2>Alat</h2><ul style="columns:2;font-size:10pt;list-style:none;padding:0">${gear}</ul>
+ <h2>Keselamatan & Kontak Darurat</h2><p style="font-size:10pt"><b>Fasilitas kesehatan terdekat:</b> ${esc(c.rs)||'-'}<br><b>Kontak darurat:</b> ${esc(c.darurat)||'-'}</p>${c.catatan?`<p style="font-size:10pt"><b>Catatan:</b> ${nl(c.catatan)}</p>`:''}
+ <div class="foot">Estimasi jadwal dihitung dari durasi shot × rasio take ${S.prod.take}, persiapan ${S.prod.setupShot} menit/shot, dan ${S.prod.setupLoc} menit/lokasi.</div></div>`;
+}
+function budCalc(){const b=S.bud;const D=b.items.reduce((a,x)=>a+(+x.qty||0)*(+x.harga||0),0);const K=D*(+b.kont||0)/100,J=D*(+b.jasa||0)/100;const offer=Math.ceil((D+K+J)/50000)*50000;const deal=+S.order.nilai||offer;const fund=Math.max(0,deal-D-K);return {D,K,J,offer,deal,fund,siswa:fund*(+b.pSiswa||0)/100,kas:fund*(+b.pKas||0)/100,alat:fund*(+b.pAlat||0)/100}}
+function budDoc(){
+ const c=budCalc(),m=S.meta,o=S.order;const cats=[...new Set(S.bud.items.map(x=>x.kat))];let rows='',n=0;
+ cats.forEach(k=>{const its=S.bud.items.filter(x=>x.kat===k);rows+=`<tr><td colspan="6" class="sl">${esc(k)}</td></tr>`+its.map(x=>`<tr><td>${++n}</td><td>${esc(x.item)}</td><td class="r">${+x.qty||0}</td><td>${esc(x.sat)}</td><td class="r">${rp(x.harga)}</td><td class="r">${rp((+x.qty||0)*(+x.harga||0))}</td></tr>`).join('')});
+ return `<div class="d"><h1>RENCANA ANGGARAN BIAYA (RAB) PRODUKSI</h1><div style="font-size:9.5pt;color:#555">Teaching Factory · Penyiaran TV & Film</div>
+ <table class="meta"><tr><td><b>Produksi</b></td><td>${esc(m.judul)||'-'}</td><td><b>Klien</b></td><td>${esc(o.klien)||'-'} (${esc(o.jenis)})</td></tr><tr><td><b>Produk</b></td><td>${esc(o.produk)||'-'}</td><td><b>Tenggat</b></td><td>${esc(o.deadline)||'-'}</td></tr></table>
+ <table class="t"><thead><tr><th>No</th><th>Uraian</th><th>Vol</th><th>Satuan</th><th>Harga Satuan</th><th>Jumlah</th></tr></thead><tbody>${rows}
+ <tr><td colspan="5" class="r"><b>Biaya langsung</b></td><td class="r"><b>${rp(c.D)}</b></td></tr>
+ <tr><td colspan="5" class="r">Kontingensi ${S.bud.kont}%</td><td class="r">${rp(c.K)}</td></tr>
+ <tr><td colspan="5" class="r">Jasa produksi TEFA ${S.bud.jasa}%</td><td class="r">${rp(c.J)}</td></tr>
+ <tr><td colspan="5" class="r"><b>Harga penawaran (dibulatkan)</b></td><td class="r"><b>${rp(c.offer)}</b></td></tr></tbody></table>
+ ${o.nilai?`<p style="font-size:10pt"><b>Nilai kesepakatan:</b> ${rp(c.deal)}</p>`:''}
+ <h2>Rencana Pembagian Dana Jasa (internal)</h2><table class="t" style="max-width:480px"><tbody><tr><td>Honor siswa (${S.bud.pSiswa}%)</td><td class="r">${rp(c.siswa)}</td></tr><tr><td>Kas TEFA/sekolah (${S.bud.pKas}%)</td><td class="r">${rp(c.kas)}</td></tr><tr><td>Pemeliharaan & peremajaan alat (${S.bud.pAlat}%)</td><td class="r">${rp(c.alat)}</td></tr><tr><td><b>Total dana jasa</b></td><td class="r"><b>${rp(c.fund)}</b></td></tr></tbody></table>
+ <div class="sig"><div>Mengetahui,<br>Ketua TEFA<br><br><br><br>(..............................)</div><div>Guru Pembimbing<br><br><br><br><br>(..............................)</div><div>Mitra / Klien<br><br><br><br><br>(${esc(o.pic)||'..............................'})</div></div></div>`;
+}
+const wrapDoc=(title,body)=>`<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><title>${esc(title)}</title><style>body{margin:24px}${DOC_CSS}</style></head><body>${body}</body></html>`;
+const wordDoc=(title,body)=>`<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word"><head><meta charset="utf-8"><title>${esc(title)}</title><style>@page{size:29.7cm 21cm;margin:1.5cm}${DOC_CSS}</style></head><body>${body}</body></html>`;
+function printDoc(body,landscape){const pa=$('#print-area');pa.innerHTML=`<style>${DOC_CSS}@page{size:A4 ${landscape?'landscape':'portrait'};margin:12mm}</style>${body}`;setTimeout(()=>{try{window.print()}catch(e){toast('Cetak tidak tersedia di tampilan ini')}},50)}
+function renderDoc(){$('#docView').innerHTML=`<style>${DOC_CSS}</style>`+scriptDoc($('#optSb').checked,$('#optRef').checked)}
+$('#optSb').onchange=renderDoc;$('#optRef').onchange=renderDoc;
+$$('[data-exp]').forEach(b=>b.onclick=()=>{const t=b.dataset.exp,sb=$('#optSb').checked,rf=$('#optRef').checked,body=scriptDoc(sb,rf);
+ if(t==='pdf')printDoc(body,true);
+ else if(t==='doc')download(fname('doc'),'application/msword',wordDoc(S.meta.judul,body));
+ else if(t==='html')download(fname('html'),'text/html',wrapDoc(S.meta.judul||'Shooting Script',body));
+ else if(t==='xls'){const head=['No','Scene','INT/EXT','Lokasi','Waktu','Ukuran','Sudut','Pergerakan','Lensa','Visual','Tipe Audio','Audio','Durasi (dtk)','Catatan','Terekam'];
+  const rows=S.shots.map((s,i)=>[i+1,s.scene,s.intext,s.lokasi,s.waktu,s.size,s.angle,s.move,s.lensa,s.visual,s.audioType,s.audio,s.durasi,s.catatan,s.done?'Ya':'Belum']);
+  download(fname('xls'),'application/vnd.ms-excel',xlsTable(head,rows,'Shooting Script'))}});
+function xlsTable(head,rows,title){return `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel"><head><meta charset="utf-8"><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet><x:Name>${esc(title)}</x:Name><x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet></x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]--></head><body><table border="1"><tr>${head.map(h=>`<th style="background:#f3e6dc">${esc(h)}</th>`).join('')}</tr>${rows.map(r=>`<tr>${r.map(c=>`<td style="vertical-align:top">${nl(c)}</td>`).join('')}</tr>`).join('')}</table></body></html>`}
+
+/* ---------- TEFA order ---------- */
+const ORDER=[['klien','Nama Klien / Usaha','text',''],['jenis','Jenis Mitra','sel','',['UMKM','DUDI / Industri','Instansi Pemerintah','Komunitas Budaya','Sekolah / Kampus','Lainnya']],['pic','Nama PIC Klien'],['kontak','Kontak PIC','tel'],['produk','Produk / Layanan'],['platform','Platform Tayang','sel','',['Instagram Reels','TikTok','YouTube','Facebook','TV Lokal','Videotron / Pameran','Lainnya']],['rasio','Rasio Video','sel','',['16:9','9:16','1:1','4:3']],['durasi','Durasi Target (detik)','number'],['deadline','Tenggat','date'],['nilai','Nilai Kesepakatan (Rp)','number'],['revisi','Batas Revisi','number'],['tujuan','Tujuan Video','area','','Misal: meningkatkan penjualan daring; memperkenalkan proses produksi'],['target','Target Penonton','area','','Usia, wilayah, kebiasaan menonton'],['pesan','Kunci Pesan / Call to Action','area',''],['budaya','Nilai Budaya Lokal yang Ditonjolkan','area','','Misal: motif Besurek, bahasa daerah, kearifan pengrajin']];
+function renderOrder(){
+ $('#orderForm').innerHTML=ORDER.map(([k,l,t,c,x])=>{const v=S.order[k];if(t==='sel')return `<div class="fld ${c||''}"><label for="order-${k}">${l}</label><select id="order-${k}" data-order="${k}">${opts(x,v)}</select></div>`;return field('order',k,l,t,c,t==='area'?x:'',v)}).join('');
+ renderPipe();
+}
+let openStage=null;
+function stageProg(st){const ch=S.order.checks;const d=st.items.filter((_,j)=>ch[st.k+j]).length;return [d,st.items.length]}
+function curStage(){for(let i=0;i<STAGES.length;i++){const [d,n]=stageProg(STAGES[i]);if(d<n)return i}return STAGES.length}
+function renderPipe(){
+ const cur=curStage();if(openStage==null)openStage=Math.min(cur,STAGES.length-1);
+ $('#pipe').innerHTML=STAGES.map((st,i)=>{const [d,n]=stageProg(st);return `<button type="button" class="stage ${i<cur?'done':i===cur?'cur':''}" data-stage="${i}" aria-pressed="${i===openStage}"><span class="dot">${i<cur?'✓':i+1}</span><span class="tx"><b>${st.t}</b><small>${d}/${n}${i<cur?' · selesai':i===cur?' · aktif':''}</small><div class="prog"><i style="width:${d/n*100}%"></i></div></span></button>`}).join('');
+ const st=STAGES[openStage];
+ $('#stageDetail').innerHTML=`<h3 style="margin-top:0">Tahap ${openStage+1}: ${st.t}</h3><div class="checks">${st.items.map((it,j)=>`<label><input type="checkbox" data-chk="${st.k+j}" ${S.order.checks[st.k+j]?'checked':''}> ${esc(it)}</label>`).join('')}</div><button class="btn" type="button" data-tabgo="${st.tab}" style="margin-top:6px">Buka alat terkait →</button>${cur>=STAGES.length?'<p class="finding saran" style="margin-top:10px"><b>🎉 Semua tahap selesai.</b> Arsipkan cadangan proyek (.json) sebagai portofolio TEFA.</p>':''}`;
+}
+$('#pipe').addEventListener('click',e=>{const b=e.target.closest('[data-stage]');if(b){openStage=+b.dataset.stage;renderPipe()}});
+$('#stageDetail').addEventListener('change',e=>{const k=e.target.dataset.chk;if(!k)return;S.order.checks[k]=e.target.checked;changed();renderPipe()});
+$('#stageDetail').addEventListener('click',e=>{const b=e.target.closest('[data-tabgo]');if(b)showTab(b.dataset.tabgo)});
+
+/* ---------- call sheet ---------- */
+const CALL=[['tanggal','Tanggal Syuting','date'],['call','Call Time','time'],['kumpul','Titik Kumpul'],['cuaca','Prakiraan Cuaca'],['rs','Fasilitas Kesehatan Terdekat'],['darurat','Kontak Darurat (nama & nomor)'],['catatan','Catatan Umum (kostum, konsumsi, perizinan)','area','wide']];
+function renderCall(){
+ $('#callForm').innerHTML=CALL.map(([k,l,t,c])=>field('call',k,l,t,c,'',S.call[k])).join('');
+ if(!S.crew.length){const m=S.meta;S.crew=[['Sutradara',m.sutradara],['Kameramen',m.kameramen],['Editor',m.editor],['Penata Suara',''],['Penata Cahaya',''],['Talent/Narasumber','']].map(([peran,nama])=>({id:uid(),peran,nama:nama||'',kontak:'',call:''}))}
+ renderCrew();renderGear();renderCallView();
+}
+function renderCrew(){$('#crewTbl').innerHTML=`<thead><tr><th scope="col">Peran</th><th scope="col">Nama</th><th scope="col">Kontak</th><th scope="col">Call</th><th scope="col"><span class="sr">Aksi</span></th></tr></thead><tbody>${S.crew.map((r,i)=>`<tr data-cid="${r.id}"><td><input type="text" data-c="peran" value="${esc(r.peran)}" aria-label="Peran baris ${i+1}"></td><td><input type="text" data-c="nama" value="${esc(r.nama)}" aria-label="Nama baris ${i+1}"></td><td><input type="tel" data-c="kontak" value="${esc(r.kontak)}" aria-label="Kontak baris ${i+1}"></td><td><input type="time" data-c="call" value="${esc(r.call)}" aria-label="Call time baris ${i+1}"></td><td><button class="ib" type="button" data-cdel aria-label="Hapus baris ${i+1}">🗑</button></td></tr>`).join('')}</tbody>`}
+$('#crewTbl').addEventListener('input',e=>{const k=e.target.dataset.c;if(!k)return;const r=S.crew.find(x=>x.id===e.target.closest('tr').dataset.cid);r[k]=e.target.value;changed(true);renderCallView()});
+$('#crewTbl').addEventListener('click',e=>{if(!e.target.closest('[data-cdel]'))return;const id=e.target.closest('tr').dataset.cid;S.crew=S.crew.filter(x=>x.id!==id);renderCrew();changed();renderCallView()});
+$('#bCrew').onclick=()=>{S.crew.push({id:uid(),peran:'',nama:'',kontak:'',call:''});renderCrew();changed();$('#crewTbl tbody tr:last-child input').focus()};
+function renderGear(){$('#gearList').innerHTML=S.gear.map(g=>`<label><input type="checkbox" data-g="${g.id}" ${g.c?'checked':''}> <span style="flex:1">${esc(g.t)}</span><button class="ib" type="button" data-gdel="${g.id}" aria-label="Hapus ${esc(g.t)}" style="width:26px;height:26px;font-size:12px">✕</button></label>`).join('')}
+$('#gearList').addEventListener('change',e=>{const id=e.target.dataset.g;if(!id)return;S.gear.find(g=>g.id===id).c=e.target.checked;changed();renderCallView()});
+$('#gearList').addEventListener('click',e=>{const b=e.target.closest('[data-gdel]');if(!b)return;e.preventDefault();S.gear=S.gear.filter(g=>g.id!==b.dataset.gdel);renderGear();changed();renderCallView()});
+const addGear=()=>{const v=$('#gearNew').value.trim();if(!v)return;S.gear.push({id:uid(),t:v,c:false});$('#gearNew').value='';renderGear();changed();renderCallView()};
+$('#bGear').onclick=addGear;$('#gearNew').addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();addGear()}});
+function renderCallView(){$('#callView').innerHTML=`<style>${DOC_CSS}</style>`+callDoc()}
+$('#bPrintCall').onclick=()=>printDoc(callDoc(),false);
+$('#bDocCall').onclick=()=>download(fname('callsheet.doc').replace('.callsheet.doc','-callsheet.doc'),'application/msword',wordDoc('Call Sheet',callDoc()));
+
+/* ---------- budget ---------- */
+const KATS=['Pra-produksi','Produksi','Pascaproduksi','Operasional'];
+function renderBud(){
+ $('#budTbl').innerHTML=`<thead><tr><th scope="col">Kategori</th><th scope="col">Uraian</th><th scope="col" class="num">Vol</th><th scope="col">Satuan</th><th scope="col" class="num">Harga Satuan (Rp)</th><th scope="col" class="num">Jumlah</th><th scope="col"><span class="sr">Aksi</span></th></tr></thead><tbody>${S.bud.items.map((x,i)=>`<tr data-bid="${x.id}"><td style="min-width:132px"><select data-b="kat" aria-label="Kategori baris ${i+1}">${opts(KATS,x.kat)}</select></td><td><input type="text" data-b="item" value="${esc(x.item)}" aria-label="Uraian baris ${i+1}" style="min-width:160px"></td><td><input type="number" min="0" data-b="qty" value="${esc(x.qty)}" aria-label="Volume baris ${i+1}" style="width:70px"></td><td><input type="text" data-b="sat" value="${esc(x.sat)}" aria-label="Satuan baris ${i+1}" style="width:80px"></td><td><input type="number" min="0" step="1000" data-b="harga" value="${esc(x.harga)}" aria-label="Harga baris ${i+1}" style="width:130px"></td><td class="num" data-sub>${rp((+x.qty||0)*(+x.harga||0))}</td><td><button class="ib" type="button" data-bdel aria-label="Hapus baris ${i+1}">🗑</button></td></tr>`).join('')}</tbody>`;
+ $('#budParam').innerHTML=[['kont','Kontingensi (%)'],['jasa','Jasa produksi TEFA (%)'],['pSiswa','Honor siswa (% dana jasa)'],['pKas','Kas TEFA/sekolah (%)'],['pAlat','Pemeliharaan alat (%)']].map(([k,l])=>`<div class="fld"><label for="bp-${k}">${l}</label><input type="number" min="0" max="100" id="bp-${k}" data-bp="${k}" value="${esc(S.bud[k])}"></div>`).join('');
+ renderBudSum();
+}
+function renderBudSum(){const c=budCalc(),b=S.bud;const pct=(+b.pSiswa||0)+(+b.pKas||0)+(+b.pAlat||0);
+ $('#bigOffer').textContent=rp(c.offer);
+ $('#budSum').innerHTML=`<div class="sum2"><div>Biaya langsung</div><div>${rp(c.D)}</div><div>Kontingensi ${b.kont}%</div><div>${rp(c.K)}</div><div>Jasa produksi ${b.jasa}%</div><div>${rp(c.J)}</div><div class="t">Nilai kesepakatan${S.order.nilai?'':' <small class="s">(isi di Order)</small>'}</div><div class="t">${rp(c.deal)}</div><div>Dana jasa dibagi</div><div>${rp(c.fund)}</div><div class="s">• Honor siswa</div><div class="s">${rp(c.siswa)}</div><div class="s">• Kas TEFA/sekolah</div><div class="s">${rp(c.kas)}</div><div class="s">• Pemeliharaan alat</div><div class="s">${rp(c.alat)}</div></div>${pct!==100?`<p class="finding perlu" style="margin-top:10px"><b>Persentase pembagian berjumlah ${pct}%</b><span class="q">Seharusnya 100%. Bagian mana yang perlu disesuaikan?</span></p>`:''}${S.order.nilai&&c.deal<c.D+c.K?`<p class="finding perlu" style="margin-top:10px"><b>Nilai kesepakatan di bawah biaya langsung + kontingensi</b><span class="q">Item mana yang bisa dihemat tanpa menurunkan mutu, atau perlukah negosiasi ulang?</span></p>`:''}`;
+ $('#budView').innerHTML=`<style>${DOC_CSS}</style>`+budDoc();
+}
+$('#budTbl').addEventListener('input',e=>{const k=e.target.dataset.b;if(!k)return;const tr=e.target.closest('tr');const x=S.bud.items.find(y=>y.id===tr.dataset.bid);x[k]=['qty','harga'].includes(k)?+e.target.value:e.target.value;$('[data-sub]',tr).textContent=rp((+x.qty||0)*(+x.harga||0));changed(e.target.tagName!=='SELECT');renderBudSum()});
+$('#budTbl').addEventListener('click',e=>{if(!e.target.closest('[data-bdel]'))return;const id=e.target.closest('tr').dataset.bid;S.bud.items=S.bud.items.filter(x=>x.id!==id);renderBud();changed()});
+$('#budParam').addEventListener('input',e=>{const k=e.target.dataset.bp;if(!k)return;S.bud[k]=+e.target.value;changed(true);renderBudSum()});
+$('#bBud').onclick=()=>{S.bud.items.push({id:uid(),kat:'Produksi',item:'',sat:'paket',qty:1,harga:0});renderBud();changed();$('#budTbl tbody tr:last-child input').focus()};
+$('#bPrintBud').onclick=()=>printDoc(budDoc(),false);
+$('#bViewBud').onclick=()=>{$('#budView').innerHTML=`<style>${DOC_CSS}</style>`+budDoc();$('#dlgView').showModal()};
+$('#bXlsBud').onclick=()=>{const c=budCalc();const rows=S.bud.items.map((x,i)=>[i+1,x.kat,x.item,x.qty,x.sat,x.harga,(+x.qty||0)*(+x.harga||0)]);rows.push(['','','Biaya langsung','','','',c.D],['','','Kontingensi '+S.bud.kont+'%','','','',Math.round(c.K)],['','','Jasa produksi '+S.bud.jasa+'%','','','',Math.round(c.J)],['','','Harga penawaran','','','',c.offer]);download(fname('xls').replace('.xls','-rab.xls'),'application/vnd.ms-excel',xlsTable(['No','Kategori','Uraian','Vol','Satuan','Harga Satuan','Jumlah'],rows,'RAB'))};
+
+/* ---------- generic delegated inputs ---------- */
+document.addEventListener('input',e=>{const d=e.target.dataset;
+ if(d.meta!=null){S.meta[d.meta]=e.target.value;changed(true)}
+ else if(d.refl!=null){S.refl[d.refl]=e.target.value;changed(true)}
+ else if(d.order!=null){S.order[d.order]=e.target.type==='number'?e.target.value:e.target.value;changed(e.target.tagName!=='SELECT');if(d.order==='nilai')renderBudSum()}
+ else if(d.call!=null){S.call[d.call]=e.target.value;changed(true);renderCallView()}
+});
+
+/* ---------- templates ---------- */
+const T=(scene,intext,lokasi,waktu,size,angle,move,visual,audioType,audio,durasi,catatan='')=>newShot({scene,intext,lokasi,waktu,size,angle,move,visual,audioType,audio,durasi,catatan});
+const TEMPLATES=[
+ {id:'tabot',t:'Dokumenter Tradisi Tabot',d:'Dokumenter 5–7 menit tentang rangkaian Tabot di Bengkulu, dengan fokus pada makna dan regenerasi.',meta:{genre:'Dokumenter budaya',judul:'Dokumenter Tabot Bengkulu'},order:{jenis:'Komunitas Budaya',platform:'YouTube',rasio:'16:9',durasi:'360',budaya:'Tradisi Tabot, musik Dol & Tassa, peran keluarga Tabot'},shots:()=>[
+  T(1,'EXT','Kota Bengkulu, jalan utama','SORE','ELS','High Angle','Drone / Aerial','▸ Suasana kota menjelang 1 Muharram. Penanda visual apa yang memperlihatkan kota sedang bersiap?','Musik Diegetik (Live)','▸ Suara dol & tassa dari kejauhan; rekam ambience terpisah',8,'Drone wajib berizin dan tidak terbang di atas kerumunan'),
+  T(1,'EXT','Kota Bengkulu, jalan utama','SORE','MS','Eye Level','Gimbal Follow','▸ Warga menyiapkan perayaan. Tokoh siapa yang akan kita ikuti sepanjang film?','Natural Sound / Ambience','▸ Mic kamera + shotgun',6),
+  T(2,'INT','Rumah keluarga Tabot','SIANG','MCU','Eye Level','Static','▸ Wawancara narasumber keluarga Tabot. Rumuskan 3 pertanyaan kunci tentang makna dan sejarah.','Wawancara','▸ Mic clip-on, ruangan tenang, rekam room tone 30 detik',30,'Minta izin tertulis narasumber; verifikasi data sejarah ke sumber tertulis'),
+  T(2,'INT','Rumah keluarga Tabot','SIANG','INS','High Angle','Static','▸ B-roll detail: benda, arsip, atau foto keluarga yang mendukung cerita narasumber','Voice Over / Narasi','▸ Lanjutan suara wawancara (J-cut)',5),
+  T(3,'EXT','Lokasi ritual mengambik tanah','MALAM','LS','Eye Level','Static','▸ Prosesi mengambik tanah dari jarak hormat. Bagian mana yang boleh direkam?','Natural Sound / Ambience','▸ Doa dan suasana asli, tanpa musik tambahan',10,'Ritual sakral: minta izin pemangku adat; tanpa lampu sorot/flash'),
+  T(4,'INT','Tempat pembuatan bangunan Tabot','SIANG','CU','Eye Level','Rack Focus','▸ Tangan perajin merangkai kerangka dan hiasan. Detail apa yang memperlihatkan ketelitian?','Natural Sound / Ambience','▸ Suara alat kerja',6),
+  T(5,'EXT','Halaman latihan Dol','SORE','MS','Low Angle','Handheld','▸ Kelompok muda berlatih dol dan tassa. Bagaimana menangkap energi dan ritmenya?','Musik Diegetik (Live)','▸ Mic terpisah; atur gain agar tidak clipping',8),
+  T(5,'EXT','Halaman latihan Dol','SORE','ECU','Eye Level','Static','▸ Detail pemukul menghantam kulit dol','Musik Diegetik (Live)','▸ ',3,'Gunakan frame rate tinggi bila memungkinkan'),
+  T(6,'EXT','Rute arak-arakan','MALAM','LS','High Angle','Crane / Jib','▸ Arak-arakan malam. Dari posisi aman mana kamera bisa melihat keseluruhan?','Musik Diegetik (Live)','▸ ',10,'Koordinasi dengan panitia; tentukan jalur evakuasi kru'),
+  T(7,'EXT','Lokasi Tabot Tebuang','PAGI','FS','Eye Level','Static','▸ Prosesi Tabot Tebuang sebagai penutup rangkaian. Apa yang dirasakan warga?','Natural Sound / Ambience','▸ ',10,'Hormati area makam dan peziarah'),
+  T(8,'EXT','Titik refleksi (pantai/ruang terbuka)','SORE','ELS','Eye Level','Dolly Out','▸ Penutup: gambar simbolik tentang warisan yang diteruskan generasi muda','Voice Over / Narasi','▸ Narasi penutup ditulis kelompok sendiri',8)]},
+ {id:'dol',t:'Profil Perajin & Pemain Dol',d:'Dokumenter pendek 3 menit: perajin, proses pembuatan, pertunjukan, dan regenerasi.',meta:{genre:'Dokumenter profil',judul:'Suara Dol: Profil Perajin'},order:{jenis:'Komunitas Budaya',platform:'YouTube',rasio:'16:9',durasi:'180',budaya:'Kerajinan dan musik Dol Bengkulu'},shots:()=>[
+  T(1,'INT','Bengkel perajin Dol','PAGI','ECU','Eye Level','Static','▸ Pembuka misterius: detail tekstur kayu/kulit. Apa yang membuat penonton penasaran?','SFX','▸ Suara ketukan pelan',4),
+  T(1,'INT','Bengkel perajin Dol','PAGI','MCU','Eye Level','Static','▸ Wawancara perajin: sejak kapan, belajar dari siapa, apa tantangannya?','Wawancara','▸ Clip-on; matikan kipas/mesin saat merekam',25,'Verifikasi bahan dan proses langsung ke perajin'),
+  T(2,'INT','Bengkel perajin Dol','PAGI','CU','High Angle','Tracking','▸ Tahapan proses pembuatan (bahan, pengerjaan, pemasangan kulit). Urutkan sesuai penjelasan perajin.','Natural Sound / Ambience','▸ ',12),
+  T(2,'INT','Bengkel perajin Dol','PAGI','INS','Overhead','Static','▸ Detail alat kerja tradisional','Natural Sound / Ambience','▸ ',4),
+  T(3,'EXT','Sanggar / halaman latihan','SORE','LS','Eye Level','Static','▸ Pertunjukan atau latihan grup Dol','Musik Diegetik (Live)','▸ Rekam audio stereo terpisah',10),
+  T(3,'EXT','Sanggar / halaman latihan','SORE','MS','Low Angle','Handheld','▸ Pemain muda: wajah, semangat, kekompakan','Musik Diegetik (Live)','▸ ',6),
+  T(4,'EXT','Sanggar / halaman latihan','SORE','MCU','Eye Level','Static','▸ Wawancara pemain muda: mengapa mereka mau meneruskan?','Wawancara','▸ ',20),
+  T(5,'EXT','Sanggar / halaman latihan','SORE','FS','Eye Level','Dolly Out','▸ Penutup: perajin dan generasi muda dalam satu bingkai','Musik Diegetik (Live)','▸ ',6)]},
+ {id:'besurek',t:'Iklan UMKM Batik Besurek (TEFA)',d:'Iklan vertikal 45 detik untuk media sosial mitra UMKM batik Besurek.',meta:{genre:'Iklan produk / promosi UMKM',judul:'Iklan Batik Besurek'},order:{jenis:'UMKM',platform:'Instagram Reels',rasio:'9:16',durasi:'45',budaya:'Motif Batik Besurek dan nilai kerja perajin lokal'},shots:()=>[
+  T(1,'INT','Galeri/toko mitra UMKM','PAGI','CU','Eye Level','Dolly In','▸ HOOK 3 detik pertama: gambar apa yang membuat orang berhenti menggulir layar?','Musik Latar','▸ Musik bebas royalti, ketukan cepat',3,'Cek lisensi musik'),
+  T(2,'INT','Ruang produksi batik','PAGI','ECU','High Angle','Static','▸ Detail proses (canting/cap/pewarnaan) yang membedakan produk ini','Natural Sound / Ambience','▸ ',5),
+  T(2,'INT','Ruang produksi batik','PAGI','MCU','Eye Level','Rack Focus','▸ Wajah perajin saat bekerja. Bagaimana menunjukkan kebanggaan tanpa dibuat-buat?','Voice Over / Narasi','▸ VO pendek tentang kerja perajin',5,'Minta izin perajin, cantumkan nama dalam kredit'),
+  T(3,'INT','Galeri/toko mitra UMKM','SIANG','INS','Overhead','Static','▸ Flat lay produk; makna motif yang ingin dijelaskan (konfirmasi ke pemilik usaha)','Voice Over / Narasi','▸ ',6),
+  T(4,'EXT','Lokasi gaya hidup (kafe/taman kota)','SORE','MS','Eye Level','Gimbal Follow','▸ Model memakai produk dalam keseharian anak muda','Musik Latar','▸ ',8),
+  T(4,'EXT','Lokasi gaya hidup (kafe/taman kota)','SORE','FS','Low Angle','Static','▸ Pose percaya diri; seluruh busana terlihat','Musik Latar','▸ ',4),
+  T(5,'INT','Galeri/toko mitra UMKM','SIANG','MS','Eye Level','Static','▸ Call to action: alamat, akun, atau promo (sesuai brief klien)','Voice Over / Narasi','▸ CTA jelas + teks di layar',6,'Teks berada di area aman 9:16')]},
+ {id:'umkm',t:'Profil Usaha UMKM 60 Detik',d:'Kerangka umum video profil UMKM (kuliner, kriya, jasa) untuk pesanan TEFA.',meta:{genre:'Profil usaha',judul:'Profil UMKM'},order:{jenis:'UMKM',platform:'Instagram Reels',rasio:'9:16',durasi:'60',budaya:''},shots:()=>[
+  T(1,'EXT','Depan tempat usaha','PAGI','LS','Eye Level','Static','▸ Establishing: di mana usaha ini berada?','Natural Sound / Ambience','▸ ',4),
+  T(2,'INT','Dalam tempat usaha','PAGI','MCU','Eye Level','Static','▸ Pemilik bercerita: awal usaha dan apa yang membuatnya istimewa','Wawancara','▸ Clip-on',20),
+  T(3,'INT','Dalam tempat usaha','PAGI','CU','High Angle','Tracking','▸ Proses produksi/pelayanan paling menarik secara visual','Natural Sound / Ambience','▸ ',10),
+  T(3,'INT','Dalam tempat usaha','PAGI','INS','Overhead','Static','▸ Detail produk unggulan','Musik Latar','▸ ',5),
+  T(4,'INT','Dalam tempat usaha','SIANG','MS','Eye Level','Handheld','▸ Pelanggan menikmati produk/layanan (dengan izin)','Natural Sound / Ambience','▸ ',8,'Minta persetujuan pelanggan yang tampil'),
+  T(5,'EXT','Depan tempat usaha','SIANG','MS','Eye Level','Static','▸ CTA: ajakan, alamat, jam buka, akun media sosial','Voice Over / Narasi','▸ ',8)]},
+ {id:'kosong',t:'Mulai Kosong',d:'Satu shot kosong untuk karya bebas.',meta:{},order:{},shots:()=>[newShot()]}
+];
+$('#tplGrid').innerHTML=TEMPLATES.map(t=>`<button type="button" class="tpl" data-tpl="${t.id}"><b>${esc(t.t)}</b><span>${esc(t.d)}</span></button>`).join('');
+$('#tplGrid').addEventListener('click',async e=>{const b=e.target.closest('[data-tpl]');if(!b)return;const t=TEMPLATES.find(x=>x.id===b.dataset.tpl);const mode=$('input[name=tplMode]:checked').value;
+ if(mode==='replace'&&S.shots.length&&!(await confirmBox(`Ganti ${S.shots.length} shot yang ada dengan template "${t.t}"? Kamu masih bisa mengurungkannya.`)))return;
+ const sh=t.shots();
+ if(mode==='replace'){S.shots=sh;OPEN.clear();for(const k in t.meta)if(!S.meta[k])S.meta[k]=t.meta[k];for(const k in t.order)S.order[k]=t.order[k]}
+ else{const off=S.shots.length?Math.max(...S.shots.map(s=>+s.scene||0)):0;sh.forEach(s=>s.scene=(+s.scene)+off);S.shots.push(...sh)}
+ $('#dlgTpl').close();renderAll();changed();showTab('naskah');toast(`Template "${t.t}" dimuat`)});
+
+/* ---------- backup ---------- */
+$('#bkSave').onclick=()=>download(fname('json').replace('.json','-ssm.json'),'application/json',JSON.stringify(S,null,1));
+$('#bkCopy').onclick=()=>copy(JSON.stringify(S),'Data proyek tersalin');
+$('#bkFile').onchange=e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=async()=>{try{const d=JSON.parse(r.result);if(!d||!Array.isArray(d.shots))throw 0;if(!(await confirmBox('Buka cadangan ini? Proyek yang sekarang akan diganti (masih bisa diurungkan).')))return;S=merge(defState(),d);renderAll();changed();$('#dlgBackup').close();toast('Cadangan dibuka')}catch(_){toast('File cadangan tidak valid')}};r.readAsText(f);e.target.value=''};
+
+/* ---------- tabs, theme, top buttons ---------- */
+const TABS=$$('[role=tab]').map(b=>b.dataset.tab);
+const SEC={naskah:['Naskah','Susun shot demi shot. Klik sebuah shot untuk membuka detailnya.'],storyboard:['Storyboard','Satu bingkai per shot. Gambar langsung atau unggah sketsa kertas.'],lokasi:['Shot List per Lokasi','Urutan syuting efisien: kru cukup datang sekali ke tiap lokasi.'],reviu:['Asisten Reviu','Asisten bertanya, kamu yang memutuskan.'],cetak:['Pratinjau & Ekspor','Cetak/PDF, Word, Excel, atau HTML.'],order:['Order Klien','Alur pesanan mitra UMKM/DUDI dari brief sampai serah terima.'],callsheet:['Call Sheet','Jadwal kru disusun otomatis dari shot list.'],budget:['Budget / RAB','Rencana anggaran, harga penawaran, dan pembagian dana jasa.']};
+function showTab(t,focus){if(!TABS.includes(t))t='naskah';$('#secTitle').textContent=SEC[t][0];$('#secSub').textContent=SEC[t][1];$$('[role=tab]').forEach(b=>{const on=b.dataset.tab===t;b.setAttribute('aria-selected',on);b.tabIndex=on?0:-1;if(on&&focus)b.focus()});$$('.panel').forEach(p=>p.hidden=p.id!=='p-'+t);
+ if(t==='storyboard')renderSB();if(t==='lokasi')renderLoc();if(t==='reviu'){renderReview();renderRef()}if(t==='cetak')renderDoc();if(t==='order')renderOrder();if(t==='callsheet')renderCall();if(t==='budget')renderBud();
+ try{history.replaceState(null,'','#'+t)}catch(_){}}
+$('nav.tabs').addEventListener('click',e=>{const b=e.target.closest('[role=tab]');if(b){showTab(b.dataset.tab);const y=$('#main').getBoundingClientRect().top+scrollY-($('header.top').offsetHeight||0)-8;if(scrollY>y)scrollTo({top:Math.max(0,y)})}});
+document.addEventListener('focusout',e=>{if(/INPUT|TEXTAREA/.test(e.target.tagName))commit()});
+$('nav.tabs').addEventListener('keydown',e=>{const i=TABS.indexOf(document.activeElement.dataset.tab);if(i<0)return;let n=null;if(e.key==='ArrowRight'||e.key==='ArrowDown')n=(i+1)%TABS.length;if(e.key==='ArrowLeft'||e.key==='ArrowUp')n=(i-1+TABS.length)%TABS.length;if(e.key==='Home')n=0;if(e.key==='End')n=TABS.length-1;if(n!=null){e.preventDefault();showTab(TABS[n],true)}});
+window.addEventListener('hashchange',()=>showTab(location.hash.slice(1)));
+function setTheme(t){document.documentElement.dataset.theme=t;const b=$('#bTheme');b.setAttribute('aria-pressed',t==='dark');b.textContent=t==='dark'?'☀️ Mode Terang':'🌙 Mode Gelap';try{localStorage.setItem(TKEY,t)}catch(_){}}
+$('#bTheme').onclick=()=>setTheme(document.documentElement.dataset.theme==='dark'?'light':'dark');
+$('#bUndo').onclick=()=>jump(-1);$('#bRedo').onclick=()=>jump(1);
+$('#bTpl').onclick=()=>$('#dlgTpl').showModal();$('#bBackup').onclick=()=>$('#dlgBackup').showModal();
+$('#bAdd').onclick=()=>addShot(false);$('#bAddScene').onclick=()=>addShot(true);
+$('#bReset').onclick=async()=>{if(await confirmBox('Kosongkan seluruh proyek (naskah, storyboard, data TEFA)? Kamu masih bisa mengurungkannya selama halaman belum ditutup.')){const th=document.documentElement.dataset.theme;S=defState();renderAll();changed();setTheme(th);toast('Proyek direset · tekan Urungkan untuk membatalkan')}};
+$$('dialog [data-close]').forEach(b=>b.addEventListener('click',()=>b.closest('dialog').close()));
+document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&!e.altKey){const tag=(e.target.tagName||'');const k=e.key.toLowerCase();if(k==='z'&&!e.shiftKey&&!/INPUT|TEXTAREA/.test(tag)){e.preventDefault();jump(-1)}else if((k==='y'||(k==='z'&&e.shiftKey))&&!/INPUT|TEXTAREA/.test(tag)){e.preventDefault();jump(1)}}});
+
+function renderAll(){renderMeta();renderShots();dash();const cur=($('[role=tab][aria-selected=true]')||{}).dataset;showTab(cur?cur.tab:(location.hash.slice(1)||'naskah'))}
+
+/* ---------- init ---------- */
+let th='light';try{th=localStorage.getItem(TKEY)||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light')}catch(_){}
+setTheme(th);
+if(matchMedia('(max-width:900px)').matches)$('#metaCard').open=false;
+try{if(window.self!==window.top)$('#frameBanner').hidden=false}catch(_){$('#frameBanner').hidden=false}
+renderMeta();renderShots();dash();showTab(location.hash.slice(1)||'naskah');undoBtns();
+})();
+</script>
+</body>
+</html>

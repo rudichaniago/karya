@@ -1,0 +1,47 @@
+LAB MAYA · SIMUSET STUDIO (VERSI OFFLINE)
+Simulator Set Property & Lighting Studio untuk SMK Broadcasting & Perfilman
+=====================================================================
+
+CARA MEMBUKA
+1. Klik dua kali file "index.html". File ini sudah berisi seluruh aplikasi
+   (gambar, font, pustaka 3D, dan kode) sehingga tetap berfungsi walaupun
+   dibuka langsung dari dalam ZIP atau disalin sendirian ke komputer lain.
+2. Disarankan tetap mengekstrak (Extract All) ZIP agar data latihan tersimpan stabil.
+3. Gunakan browser Google Chrome, Microsoft Edge, atau Firefox versi terbaru.
+4. Tidak memerlukan internet. Semua gambar, font, dan pustaka 3D sudah ada di folder "assets".
+
+ISI FOLDER
+index.html                      Aplikasi lengkap dalam satu file (mandiri, tidak bergantung folder assets)
+assets/                         Salinan aset terpisah (cadangan & untuk pengembangan)
+assets/css/style.css            Tampilan aplikasi
+assets/js/app.js                Logika simulator, materi, challenge, dan penilaian
+assets/js/three.min.js          Pustaka 3D (three.js r128, lisensi MIT)
+assets/img/splash.jpg           Gambar layar pembuka
+assets/img/maskot-siswa.png     Maskot siswa laki-laki & perempuan
+assets/img/k3lh-infografik.jpg  Infografik K3LH studio
+assets/fonts/                   Font Plus Jakarta Sans & JetBrains Mono (lisensi OFL)
+bahan-publikasi/                Thumbnail 840x472 (JPG, <100 KB) & deskripsi bahan ajar
+
+Catatan: aplikasi ini tidak memakai file audio.
+
+FITUR KHUSUS VERSI OFFLINE
+- Halaman "Alat & Biaya": tombol "Gambar denah set" langsung mengunduh file PNG,
+  "Unduh daftar alat" mengunduh file CSV (bisa dibuka di Excel),
+  dan "Kode rancangan" bisa diunduh sebagai file .json.
+- File hasil unduhan diberi nama otomatis sesuai nama siswa dan tanggal.
+
+PENYIMPANAN DATA
+- Identitas siswa, checklist K3LH, rancangan set, dan riwayat nilai tersimpan
+  otomatis di browser pada komputer yang dipakai.
+- Data tidak berpindah ke komputer lain. Untuk dikumpulkan ke guru, siswa memakai
+  tombol "Salin hasil untuk guru" (hasil challenge) atau mengunduh file denah/CSV/rancangan.
+- Jika memakai komputer lab bersama, sebaiknya tiap siswa memakai profil browser
+  atau akun komputer sendiri.
+
+JIKA TAMPILAN 3D TIDAK MUNCUL
+- Komputer belum mendukung WebGL. Aktifkan "Hardware acceleration" di pengaturan browser,
+  atau gunakan mode "2D Blueprint" yang tetap berfungsi penuh.
+
+MENGUNGGAH KE PLATFORM PEMBELAJARAN
+- Unggah file ZIP ini sebagai bahan ajar. Siswa mengunduh, mengekstrak, lalu membuka index.html.
+- Jika platform mendukung tautan, Anda juga bisa membagikan versi online melalui tautan artifact.
